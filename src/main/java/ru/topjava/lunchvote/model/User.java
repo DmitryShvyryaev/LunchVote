@@ -5,22 +5,54 @@ import java.util.EnumSet;
 import java.util.Set;
 import org.springframework.util.CollectionUtils;
 
-public class User extends AbstractEntity {
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+@Entity
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "user_email_idx")})
+public class User extends AbstractNamedEntity {
+
+    @Column(name = "email", nullable = false)
+    @NotBlank
+    @Size(max = 100)
+    @Email
     private String email;
 
+    @Column(name = "password", nullable = false)
+    @NotBlank
+    @Size(min = 5, max = 100)
     private String password;
 
+    @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
     private boolean enabled;
 
+    @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
+    @NotNull
     private Date registered = new Date();
 
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")})
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public User() {
     }
 
-    public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Set<Role> roles) {
+    public User(String name, String email, String password, boolean enabled, Date registered, Set<Role> roles) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.registered = registered;
+        this.roles = roles;
+    }
+
+    public User(Long id, String name, String email, String password, boolean enabled, Date registered, Set<Role> roles) {
         super(id, name);
         this.email = email;
         this.password = password;

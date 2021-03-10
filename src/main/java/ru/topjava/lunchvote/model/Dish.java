@@ -1,20 +1,39 @@
 package ru.topjava.lunchvote.model;
 
-public class Dish extends AbstractEntity {
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
+@Entity
+@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "restaurant_id"}, name = "dishes_unique_rest_date_idx")} )
+public class Dish extends AbstractNamedEntity {
+
+    @Column(name = "price", nullable = false)
+    @NotNull
     private Double price;
+
+    @Column(name = "date", nullable = false)
+    @NotNull
+    private LocalDate date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @NotNull
+    private Restaurant restaurant;
 
     public Dish() {
     }
 
-    public Dish(Integer id, String name, Double price) {
-        super(id, name);
-        this.price = price;
-    }
-
-    public Dish(String name, Double price) {
+    public Dish(String name, Double price, LocalDate date) {
         this.name = name;
         this.price = price;
+        this.date = date;
+    }
+
+    public Dish(Long id, String name, Double price, LocalDate date) {
+        super(id, name);
+        this.price = price;
+        this.date = date;
     }
 
     public Double getPrice() {
@@ -25,12 +44,29 @@ public class Dish extends AbstractEntity {
         this.price = price;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+
     @Override
     public String toString() {
         return "Dish{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", date=" + date +
                 '}';
     }
 }

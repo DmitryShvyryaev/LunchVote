@@ -1,38 +1,39 @@
 package ru.topjava.lunchvote.model;
 
+import org.springframework.data.domain.Persistable;
+import org.springframework.util.Assert;
+
+import javax.persistence.*;
 import java.util.Objects;
 
-public class AbstractEntity {
+@MappedSuperclass
+@Access(AccessType.FIELD)
+public class AbstractEntity implements Persistable<Long> {
+    public static final int START_SEQ = 100000;
 
-    protected Integer id;
-
-    protected String name;
+    @Id
+    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", initialValue = START_SEQ)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    protected Long id;
 
     public AbstractEntity() {
     }
 
-    public AbstractEntity(Integer id, String name) {
+    public AbstractEntity(Long id) {
         this.id = id;
-        this.name = name;
     }
 
-    public Integer getId() {
+    @Override
+    public Long getId() {
+        Assert.notNull(id, "Entity must have id.");
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean  isNew() {
+    public boolean isNew() {
         return this.id == null;
     }
 
@@ -40,7 +41,6 @@ public class AbstractEntity {
     public String toString() {
         return "AbstractEntity{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -54,6 +54,6 @@ public class AbstractEntity {
 
     @Override
     public int hashCode() {
-        return id == 0 ? 0 : id;
+        return Objects.hash(id);
     }
 }

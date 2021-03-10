@@ -1,0 +1,48 @@
+package ru.topjava.lunchvote.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.repository.DishRepository;
+import ru.topjava.lunchvote.repository.RestaurantRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
+
+@Service
+public class DishServiceImpl implements DishService {
+
+    private final DishRepository repository;
+    private final RestaurantRepository restaurantRepository;
+
+    public DishServiceImpl(DishRepository repository, RestaurantRepository restaurantRepository) {
+        this.repository = repository;
+        this.restaurantRepository = restaurantRepository;
+    }
+
+    @Override
+    public List<Dish> getAll(LocalDate date, long restaurantId) {
+        return repository.findAllByDateAndRestaurantId(date, restaurantId);
+    }
+
+    @Override
+    public Dish create(Dish dish, long restaurantId, LocalDate date) {
+        Assert.notNull(dish, "Dish must not be null.");
+        dish.setDate(date);
+        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
+        return repository.save(dish);
+    }
+
+    @Override
+    public Dish update(Dish dish) {
+        Assert.notNull(dish, "Dish must not be null.");
+        return checkNotFoundWithId(repository.save(dish), dish.getId());
+    }
+
+    @Override
+    public void delete(long id) {
+        repository.deleteById(id);
+    }
+}
