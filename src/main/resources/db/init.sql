@@ -41,7 +41,7 @@ CREATE TABLE dishes
     name          VARCHAR(90) NOT NULL,
     price         DOUBLE      NOT NULL,
     restaurant_id BIGINT      NOT NULL,
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id)
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
 CREATE INDEX dishes_date_rest_idx ON dishes (date, restaurant_id);
 CREATE UNIQUE INDEX  dishes_unique_rest_date_name_idx ON dishes (date, restaurant_id, name);
@@ -52,7 +52,7 @@ CREATE TABLE votes
     date          DATE   NOT NULL,
     user_id       BIGINT NOT NULL,
     restaurant_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX votes_unique_user_date_idx ON votes (date, user_id);

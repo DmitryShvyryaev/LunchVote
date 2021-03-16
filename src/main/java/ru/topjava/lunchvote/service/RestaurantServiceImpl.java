@@ -1,14 +1,19 @@
 package ru.topjava.lunchvote.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
+import ru.topjava.lunchvote.model.Vote;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
+import ru.topjava.lunchvote.repository.UserRepository;
 import ru.topjava.lunchvote.repository.VoteRepository;
 import ru.topjava.lunchvote.to.RestaurantTo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,13 +22,17 @@ import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
+    private static final LocalTime limit = LocalTime.of(11, 0, 0);
 
     private final RestaurantRepository restaurantRepository;
     private final VoteRepository voteRepository;
+    private final UserRepository userRepository;
 
-    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, VoteRepository voteRepository) {
+    @Autowired
+    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, VoteRepository voteRepository, UserRepository userRepository) {
         this.restaurantRepository = restaurantRepository;
         this.voteRepository = voteRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -36,6 +45,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         return getAll().stream()
                 .map(rest -> createTo(rest, voteRepository.countByDateAndRestaurantId(date, rest.getId())))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public RestaurantTo getSimpleWithRating(LocalDate date, long restaurantId) {
+        Restaurant restaurant = get(restaurantId);
+        return createTo(restaurant, voteRepository.countByDateAndRestaurantId(date, restaurantId));
     }
 
     @Override
@@ -61,21 +76,19 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantRepository.deleteById(id);
     }
 
-//    @Override
-//    public boolean vote(long userId, long restaurantId, LocalDateTime dateTime) {
-//        LocalDate today = dateTime.toLocalDate();
-//        Vote vote = voteRepository.findByDateAndUserId(today, userId).orElse(null);
-//        if (vote == null) {
-//            voteRepository.save(new Vote(today, restaurantId, userId));
-//            return true;
-//        } else if (dateTime.toLocalTime().isAfter(limit)) {
-//            return false;
-//        } else {
-//            vote.setRestaurantId(restaurantId);
-//            voteRepository.save(vote);
-//            return true;
-//        }
-//    }
+    @Override
+    public boolean vote(long userId, long restaurantId, LocalDateTime now) {
+        Vote vote = voteRepository.findByDateAndUserId(now.toLocalDate(), userId).orElse(null);
+        if (vote == null) {
+            voteRepository.save(new Vote(now.toLocalDate(), restaurantRepository.getOne(restaurantId), userRepository.getOne(userId)));
+        } else if (now.toLocalTime().isAfter(limit)) {
+            return false;
+        } else {
+            vote.setRestaurant(restaurantRepository.getOne(restaurantId));
+            voteRepository.save(vote);
+        }
+        return true;
+    }
 
     private RestaurantTo createTo(Restaurant restaurant, int voteCount) {
         return new RestaurantTo(restaurant.getId(), restaurant.getName(), restaurant.getDescription(), voteCount);

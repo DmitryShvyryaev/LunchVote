@@ -6,8 +6,12 @@ import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static org.junit.Assert.assertThrows;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
+import static ru.topjava.lunchvote.testdata.DateTestData.*;
 
 public class RestaurantServiceImplTest extends AbstractServiceTest {
 
@@ -63,5 +67,20 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
 
     @Test
     public void getAllWithRating() {
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getAllWithRating(FIRST_DAY), firstDayRestTo);
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getAllWithRating(SECOND_DAY), secondDayRestTo);
+    }
+
+    @Test
+    public void getSimpleWithRating() {
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST), restTo1Day1);
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(THIRD_DAY, START_SEQ_REST), getTo(rest1, 0));
+    }
+
+    @Test
+    public void vote() {
+        restaurantService.vote(100000, START_SEQ_REST, LocalDateTime.of(THIRD_DAY, LocalTime.of(11, 20)));
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(THIRD_DAY, START_SEQ_REST),
+                getTo(rest1, 1));
     }
 }
