@@ -4,11 +4,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
-import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.model.Role;
 import ru.topjava.lunchvote.model.User;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
 
 public class UserServiceImplTest extends AbstractServiceTest {

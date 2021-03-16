@@ -43,7 +43,8 @@ CREATE TABLE dishes
     restaurant_id BIGINT      NOT NULL,
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id)
 );
-CREATE UNIQUE INDEX dishes_unique_rest_date_idx ON dishes (date, restaurant_id);
+CREATE INDEX dishes_date_rest_idx ON dishes (date, restaurant_id);
+CREATE UNIQUE INDEX  dishes_unique_rest_date_name_idx ON dishes (date, restaurant_id, name);
 
 CREATE TABLE votes
 (

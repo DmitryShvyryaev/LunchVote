@@ -5,10 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
-import ru.topjava.lunchvote.testdata.RestaurantTestData;
 
-import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 import static org.junit.Assert.assertThrows;
+import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 
 public class RestaurantServiceImplTest extends AbstractServiceTest {
 

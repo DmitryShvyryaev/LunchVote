@@ -3,6 +3,7 @@ package ru.topjava.lunchvote.service;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.repository.DishRepository;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 
@@ -24,13 +25,18 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<Dish> getAll(LocalDate date, long restaurantId) {
-        return repository.findAllByDateAndRestaurantId(date, restaurantId);
+        Restaurant owner = restaurantRepository.getOne(restaurantId);
+        return repository.findAllByDateAndRestaurant(date, owner);
     }
 
     @Override
-    public Dish create(Dish dish, long restaurantId, LocalDate date) {
+    public Dish get(long id) {
+        return checkNotFoundWithId(repository.findById(id).orElse(null), id);
+    }
+
+    @Override
+    public Dish create(Dish dish, long restaurantId) {
         Assert.notNull(dish, "Dish must not be null.");
-        dish.setDate(date);
         dish.setRestaurant(restaurantRepository.getOne(restaurantId));
         return repository.save(dish);
     }

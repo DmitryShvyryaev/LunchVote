@@ -36,6 +36,16 @@ public class Dish extends AbstractNamedEntity {
         this.date = date;
     }
 
+    public Dish(Long id, String name, Double price, LocalDate date, Restaurant restaurant) {
+        super(id, name);
+        this.price = price;
+        this.date = date;
+    }
+
+    public Dish(Dish dish) {
+        this(dish.id, dish.name, dish.getPrice(), dish.date);
+    }
+
     public Double getPrice() {
         return price;
     }

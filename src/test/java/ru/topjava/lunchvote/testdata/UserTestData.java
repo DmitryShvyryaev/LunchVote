@@ -13,7 +13,7 @@ import java.util.List;
 public class UserTestData {
     public static final Matcher<User> USER_MATCHER = Matcher.getComparator("registered");
 
-    public static final long USER_ID = 100000;
+    public static final long USER_ID = 100000L;
 
     public static final User admin = new User(USER_ID, "admin", "admin@email.com", "xxx", Role.ADMIN, Role.USER);
     public static final User user1 = new User(USER_ID + 1, "user1", "user1@email.com", "xxx", Role.USER);
@@ -21,11 +21,7 @@ public class UserTestData {
     public static final User user3 = new User(USER_ID + 3, "user3", "user3@email.com", "xxx", Role.USER);
     public static final User user4 = new User(USER_ID + 4, "user4", "user4@email.com", "xxx", Role.USER);
 
-    public static final List<User> users = new ArrayList<>();
-
-    static {
-        Collections.addAll(users, admin, user1, user2, user3, user4);
-    }
+    public static final List<User> users = List.of(admin, user1, user2, user3, user4);
 
     public static User getCreated() {
         return new User(null, "Boris", "boris@email.ru", "borya1993", true, new Date(), Collections.singleton(Role.USER));
