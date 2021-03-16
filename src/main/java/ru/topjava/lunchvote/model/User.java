@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.model;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
@@ -43,22 +44,17 @@ public class User extends AbstractNamedEntity {
     public User() {
     }
 
-    public User(String name, String email, String password, boolean enabled, Date registered, Set<Role> roles) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.enabled = enabled;
-        this.registered = registered;
-        this.roles = roles;
+    public User(Long id, String name, String email, String password, Role role, Role... roles) {
+        this(id, name, email, password, true, new Date(), EnumSet.of(role, roles));
     }
 
-    public User(Long id, String name, String email, String password, boolean enabled, Date registered, Set<Role> roles) {
+    public User(Long id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
         super(id, name);
         this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.registered = registered;
-        this.roles = roles;
+        setRoles(roles);
     }
 
     public User(User user) {
@@ -101,7 +97,7 @@ public class User extends AbstractNamedEntity {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
     }
 

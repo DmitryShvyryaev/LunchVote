@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.service;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.UserRepository;
@@ -9,6 +10,7 @@ import java.util.List;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFound;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
