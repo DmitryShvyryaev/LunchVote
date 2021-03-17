@@ -25,6 +25,10 @@ public class AbstractEntity implements Persistable<Long> {
 
     @Override
     public Long getId() {
+        return id;
+    }
+
+    public long id() {
         Assert.notNull(id, "Entity must have id.");
         return id;
     }

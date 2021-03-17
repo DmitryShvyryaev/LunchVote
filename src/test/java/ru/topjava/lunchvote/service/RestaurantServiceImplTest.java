@@ -1,5 +1,7 @@
 package ru.topjava.lunchvote.service;
 
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -17,6 +19,12 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private RestaurantService restaurantService;
+
+    @Before
+    @Override
+    public void evictCache() {
+        cacheManager.getCache("restaurants").clear();
+    }
 
     @Test
     public void getAll() {
@@ -38,9 +46,9 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
     public void create() {
         Restaurant created = restaurantService.create(getCreated());
         Restaurant newRest = getCreated();
-        newRest.setId(created.getId());
+        newRest.setId(created.id());
         RESTAURANT_MATCHER.assertMatch(created, newRest);
-        RESTAURANT_MATCHER.assertMatch(restaurantService.get(created.getId()), newRest);
+        RESTAURANT_MATCHER.assertMatch(restaurantService.get(created.id()), newRest);
     }
 
     @Test
@@ -82,5 +90,21 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
         restaurantService.vote(100000, START_SEQ_REST, LocalDateTime.of(THIRD_DAY, LocalTime.of(11, 20)));
         RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(THIRD_DAY, START_SEQ_REST),
                 getTo(rest1, 1));
+    }
+
+    @Test
+    public void voteAgainBeforeEleven() {
+        Assert.assertTrue(restaurantService.vote(100000, START_SEQ_REST + 1,
+                LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 0))));
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST), getTo(rest1, 2));
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST + 1), getTo(rest2, 2));
+    }
+
+    @Test
+    public void voteAgainAfterEleven() {
+        Assert.assertFalse(restaurantService.vote(100000, START_SEQ_REST + 1,
+                LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 1))));
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST), getTo(rest1, 3));
+        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST + 1), getTo(rest2, 1));
     }
 }

@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -39,6 +42,8 @@ public class User extends AbstractNamedEntity {
             uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")})
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    @OnDelete(action= OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
     public User() {

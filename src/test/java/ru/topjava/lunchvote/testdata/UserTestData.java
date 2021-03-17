@@ -1,11 +1,9 @@
 package ru.topjava.lunchvote.testdata;
 
-import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.model.Role;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.util.Matcher;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

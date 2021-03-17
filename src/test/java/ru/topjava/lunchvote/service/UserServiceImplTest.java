@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +15,12 @@ public class UserServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Before
+    @Override
+    public void evictCache() {
+        cacheManager.getCache("users").clear();
+    }
 
     @Test
     public void getAll() {
@@ -45,9 +52,9 @@ public class UserServiceImplTest extends AbstractServiceTest {
     public void create() {
         User created = userService.create(getCreated());
         User newUser = getCreated();
-        newUser.setId(created.getId());
+        newUser.setId(created.id());
         USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userService.get(created.getId()), newUser);
+        USER_MATCHER.assertMatch(userService.get(created.id()), newUser);
     }
 
     @Test

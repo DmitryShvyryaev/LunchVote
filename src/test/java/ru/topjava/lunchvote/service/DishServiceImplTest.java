@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.service;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -19,6 +20,12 @@ public class DishServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private DishService dishService;
+
+    @Before
+    @Override
+    public void evictCache() {
+        cacheManager.getCache("dishes").clear();
+    }
 
     @Test
     public void getAll() {
@@ -43,9 +50,9 @@ public class DishServiceImplTest extends AbstractServiceTest {
     public void create() {
         Dish created = dishService.create(getCreated(), START_SEQ_REST + 2);
         Dish newDish = getCreated();
-        newDish.setId(created.getId());
+        newDish.setId(created.id());
         DISH_MATCHER.assertMatch(newDish, created);
-        DISH_MATCHER.assertMatch(dishService.get(created.getId()), created);
+        DISH_MATCHER.assertMatch(dishService.get(created.id()), created);
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST + 2), List.of(newDish));
     }
 

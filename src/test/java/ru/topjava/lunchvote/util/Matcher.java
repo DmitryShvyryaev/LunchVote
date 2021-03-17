@@ -3,7 +3,7 @@ package ru.topjava.lunchvote.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Matcher<T> {
-    private String[] ignoredFields;
+    private final String[] ignoredFields;
 
     private Matcher(String[] ignoredFields) {
         this.ignoredFields = ignoredFields;

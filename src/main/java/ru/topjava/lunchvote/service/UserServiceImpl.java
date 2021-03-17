@@ -1,6 +1,9 @@
 package ru.topjava.lunchvote.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.UserRepository;
@@ -19,6 +22,7 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
+    @Cacheable(value = "users")
     @Override
     public List<User> getAll() {
         return repository.findAll();
@@ -34,18 +38,24 @@ public class UserServiceImpl implements UserService {
         return checkNotFound(repository.findByEmail(email).orElse(null), "email: " + email);
     }
 
+    @Transactional
+    @CacheEvict("users")
     @Override
     public User create(User user) {
         Assert.notNull(user, "User must not bu null.");
         return repository.save(user);
     }
 
+    @Transactional
+    @CacheEvict("users")
     @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
-        return checkNotFoundWithId(repository.save(user), user.getId());
+        return checkNotFoundWithId(repository.save(user), user.id());
     }
 
+    @Transactional
+    @CacheEvict("users")
     @Override
     public void delete(long id) {
         repository.deleteById(id);
