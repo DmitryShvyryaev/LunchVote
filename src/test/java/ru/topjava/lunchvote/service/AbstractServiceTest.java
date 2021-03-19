@@ -13,21 +13,24 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.topjava.lunchvote.util.JpaUtil;
 
 import java.util.concurrent.TimeUnit;
 
-@ContextConfiguration("classpath:spring/spring-config.xml")
+@ContextConfiguration({"classpath:spring/spring-config.xml", "classpath:spring-test.xml"})
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populate.sql", config = @SqlConfig(encoding = "UTF-8"))
 public abstract class AbstractServiceTest {
 
     protected static final Logger resultLog = LoggerFactory.getLogger("result");
-    protected static final Logger log = LoggerFactory.getLogger("result");
 
     protected static final StringBuilder results = new StringBuilder();
 
     @Autowired
     protected CacheManager cacheManager;
+
+    @Autowired
+    protected JpaUtil jpaUtil;
 
     @Rule
     public final Stopwatch stopwatch = new Stopwatch() {
@@ -48,6 +51,4 @@ public abstract class AbstractServiceTest {
                 "\n---------------------------------");
         results.setLength(0);
     }
-
-    public abstract void evictCache();
 }

@@ -1,4 +1,4 @@
-package ru.topjava.lunchvote.service;
+package ru.topjava.lunchvote.service.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.service.AbstractServiceTest;
+import ru.topjava.lunchvote.service.DishService;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,9 +24,8 @@ public class DishServiceImplTest extends AbstractServiceTest {
     private DishService dishService;
 
     @Before
-    @Override
     public void evictCache() {
-        cacheManager.getCache("dishes").clear();
+        jpaUtil.evictCache(Dish.class);
     }
 
     @Test
@@ -38,7 +39,7 @@ public class DishServiceImplTest extends AbstractServiceTest {
 
     @Test
     public void get() {
-        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH), tanukiFirstDayDish1);
+         DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH), tanukiFirstDayDish1);
     }
 
     @Test
@@ -73,5 +74,10 @@ public class DishServiceImplTest extends AbstractServiceTest {
         dishService.delete(START_SEQ_DISH);
         assertThrows(NotFoundException.class, () -> dishService.get(START_SEQ_DISH));
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), List.of(tanukiFirstDayDish2));
+    }
+
+    @Test
+    public void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> dishService.get(10));
     }
 }

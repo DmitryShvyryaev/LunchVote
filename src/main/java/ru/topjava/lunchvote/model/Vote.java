@@ -15,7 +15,7 @@ public class Vote extends AbstractEntity {
     @NotNull
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)

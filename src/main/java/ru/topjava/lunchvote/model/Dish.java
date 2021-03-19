@@ -1,13 +1,17 @@
 package ru.topjava.lunchvote.model;
 
+import ch.qos.logback.core.joran.action.IncludeAction;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import org.hibernate.annotations.Cache;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "restaurant_id"}, name = "dishes_unique_rest_date_idx")} )
 public class Dish extends AbstractNamedEntity {
 

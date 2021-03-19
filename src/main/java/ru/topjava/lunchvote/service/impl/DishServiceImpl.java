@@ -1,7 +1,5 @@
-package ru.topjava.lunchvote.service;
+package ru.topjava.lunchvote.service.impl;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -9,6 +7,7 @@ import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.repository.DishRepository;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
+import ru.topjava.lunchvote.service.DishService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +25,6 @@ public class DishServiceImpl implements DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
-    @Cacheable("dishes")
     @Override
     public List<Dish> getAll(LocalDate date, long restaurantId) {
         Restaurant owner = restaurantRepository.getOne(restaurantId);
@@ -39,7 +37,6 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict("dishes")
     @Override
     public Dish create(Dish dish, long restaurantId) {
         Assert.notNull(dish, "Dish must not be null.");
@@ -48,7 +45,6 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict("dishes")
     @Override
     public Dish update(Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
@@ -56,7 +52,6 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict("dishes")
     @Override
     public void delete(long id) {
         repository.deleteById(id);

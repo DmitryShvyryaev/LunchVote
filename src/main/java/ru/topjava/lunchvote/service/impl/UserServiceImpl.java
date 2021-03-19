@@ -1,4 +1,4 @@
-package ru.topjava.lunchvote.service;
+package ru.topjava.lunchvote.service.impl;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.UserRepository;
+import ru.topjava.lunchvote.service.UserService;
 
 import java.util.List;
 

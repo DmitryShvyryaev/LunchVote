@@ -1,4 +1,4 @@
-package ru.topjava.lunchvote.service;
+package ru.topjava.lunchvote.service.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,6 +7,8 @@ import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Role;
 import ru.topjava.lunchvote.model.User;
+import ru.topjava.lunchvote.service.AbstractServiceTest;
+import ru.topjava.lunchvote.service.UserService;
 
 import static org.junit.Assert.assertThrows;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
@@ -17,7 +19,6 @@ public class UserServiceImplTest extends AbstractServiceTest {
     private UserService userService;
 
     @Before
-    @Override
     public void evictCache() {
         cacheManager.getCache("users").clear();
     }
@@ -72,5 +73,10 @@ public class UserServiceImplTest extends AbstractServiceTest {
     public void delete() {
         userService.delete(USER_ID);
         assertThrows(NotFoundException.class, () -> userService.get(USER_ID));
+    }
+
+    @Test
+    public void deleteNotFound() {
+        assertThrows(NotFoundException.class, () -> userService.get(10));
     }
 }

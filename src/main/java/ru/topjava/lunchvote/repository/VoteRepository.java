@@ -14,7 +14,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     Integer countByDateAndRestaurantId(LocalDate date, Long restaurantId);
 
-    @EntityGraph(attributePaths = {"restaurant"})
+    @EntityGraph(attributePaths = {"user", "restaurant"})
     List<Vote> findAllByDate(LocalDate date);
 
     Optional<Vote> findByDateAndUserId(LocalDate date, Long userId);

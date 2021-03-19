@@ -9,9 +9,16 @@
         <heap>1</heap>
     </cache-template>
 
+    <cache-template name="nonExpiryCache">
+        <expiry>
+            <none/>
+        </expiry>
+        <heap>100</heap>
+    </cache-template>
+
     <cache alias="users" uses-template="singleNonExpiryCache"/>
 
-    <cache alias="dishes" uses-template="singleNonExpiryCache"/>
+    <cache alias="dishes" uses-template="nonExpiryCache"/>
 
-    <cache alias="restaurants" uses-template="singleNonExpiryCache"/>
+    <cache alias="restaurants" uses-template="nonExpiryCache"/>
 </config>
