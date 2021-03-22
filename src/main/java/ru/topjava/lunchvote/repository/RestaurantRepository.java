@@ -6,5 +6,4 @@ import ru.topjava.lunchvote.model.Restaurant;
 
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-
 }

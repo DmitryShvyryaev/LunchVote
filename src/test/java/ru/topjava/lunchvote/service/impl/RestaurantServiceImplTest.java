@@ -8,9 +8,13 @@ import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.RestaurantService;
+import ru.topjava.lunchvote.testdata.DishTestData;
+import ru.topjava.lunchvote.to.RestaurantWithMenu;
+import ru.topjava.lunchvote.util.Matcher;
 
 import static org.junit.Assert.assertThrows;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
+import static ru.topjava.lunchvote.testdata.DateTestData.*;
 
 public class RestaurantServiceImplTest extends AbstractServiceTest {
 
@@ -69,17 +73,27 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
         assertThrows(NotFoundException.class, () -> restaurantService.get(10));
     }
 
-//    @Test
-//    public void getAllWithRating() {
-//        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getAllWithRating(FIRST_DAY), firstDayRestTo);
-//        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getAllWithRating(SECOND_DAY), secondDayRestTo);
-//    }
-//
-//    @Test
-//    public void getSimpleWithRating() {
-//        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(FIRST_DAY, START_SEQ_REST), restTo1Day1);
-//        RESTAURANT_TO_MATCHER.assertMatch(restaurantService.getSimpleWithRating(THIRD_DAY, START_SEQ_REST), getTo(rest1, 0));
-//    }
+    @Test
+    public void getAllWithMenu() {
+        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getAllWithMenu(FIRST_DAY), restWithMenuFirstDay);
+        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getAllWithMenu(SECOND_DAY), restWithMenuSecondDay);
+    }
 
+    @Test
+    public void getWithMenu() {
+        RestaurantWithMenu actual = restaurantService.getWithMenu(START_SEQ_REST, FIRST_DAY);
+        Matcher.getComparator("menu").assertMatch(actual, rest1);
+        DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), DishTestData.tanukiFirstDay);
+    }
 
+    @Test
+    public void getWithMenuEmpty() {
+        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getWithMenu(START_SEQ_REST + 2, FIRST_DAY), rest3WithMenuDay1);
+    }
+
+    @Test
+    public void testCache() {
+        System.out.println(restaurantService.getAll());
+        System.out.println(restaurantService.getAll());
+    }
 }

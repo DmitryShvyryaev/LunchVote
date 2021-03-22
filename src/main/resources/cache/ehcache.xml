@@ -20,5 +20,7 @@
 
     <cache alias="dishes" uses-template="nonExpiryCache"/>
 
-    <cache alias="restaurants" uses-template="nonExpiryCache"/>
+    <cache alias="restaurants" uses-template="singleNonExpiryCache"/>
+
+    <cache alias="restaurantsWithMenu" uses-template="singleNonExpiryCache"/>
 </config>

@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.topjava.lunchvote.model.Dish;
@@ -12,4 +13,7 @@ import java.util.List;
 public interface DishRepository extends JpaRepository<Dish, Long> {
 
     List<Dish> findAllByDateAndRestaurant(LocalDate date, Restaurant restaurant);
+
+    @EntityGraph(attributePaths = {"restaurant"})
+    List<Dish> findAllByDate(LocalDate date);
 }

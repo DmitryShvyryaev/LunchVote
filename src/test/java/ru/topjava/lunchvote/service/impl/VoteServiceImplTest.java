@@ -3,15 +3,21 @@ package ru.topjava.lunchvote.service.impl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.topjava.lunchvote.model.Vote;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.VoteService;
+import ru.topjava.lunchvote.testdata.UserTestData;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 import static ru.topjava.lunchvote.testdata.DateTestData.*;
 import static ru.topjava.lunchvote.testdata.VoteTestData.*;
+import static ru.topjava.lunchvote.testdata.UserTestData.*;
 
 public class VoteServiceImplTest extends AbstractServiceTest {
 
@@ -20,7 +26,14 @@ public class VoteServiceImplTest extends AbstractServiceTest {
 
     @Test
     public void getAllByDate() {
-        VOTE_MATCHER.assertMatch(voteService.getAllByDate(FIRST_DAY), FIRST_DAY_VOTE);
+        List<Vote> actual = voteService.getAllByDate(FIRST_DAY);
+        VOTE_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
+        USER_MATCHER.assertMatch(actual.stream().map(Vote::getUser).collect(Collectors.toList()), users);
+    }
+
+    @Test
+    public void getAllWithoutVotes() {
+        VOTE_MATCHER.assertMatch(voteService.getAllByDate(THIRD_DAY), Collections.EMPTY_LIST);
     }
 
     @Test

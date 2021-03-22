@@ -4,26 +4,24 @@ import org.springframework.util.CollectionUtils;
 import ru.topjava.lunchvote.model.Dish;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class RestaurantWithDishes extends AbstractRestaurantTo {
+public class RestaurantWithMenu extends AbstractRestaurantTo {
 
-    private final List<Dish> dishes;
+    private final List<Dish> menu;
 
-    public RestaurantWithDishes(Long id, String name, String description, List<Dish> dishes) {
+    public RestaurantWithMenu(Long id, String name, String description, List<Dish> dishes) {
         super(id, name, description);
         if (CollectionUtils.isEmpty(dishes))
-            this.dishes = Collections.EMPTY_LIST;
+            this.menu = Collections.EMPTY_LIST;
         else {
-            this.dishes = new ArrayList<>();
-            Collections.copy(this.dishes, dishes);
+            this.menu = new ArrayList<>(dishes);
         }
     }
 
-    public List<Dish> getDishes() {
-        return dishes;
+    public List<Dish> getMenu() {
+        return menu;
     }
 
     @Override
@@ -32,7 +30,7 @@ public class RestaurantWithDishes extends AbstractRestaurantTo {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", dishes=" + dishes +
+                ", dishes=" + menu +
                 '}';
     }
 }
