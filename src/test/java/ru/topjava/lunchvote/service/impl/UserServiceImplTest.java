@@ -79,4 +79,5 @@ public class UserServiceImplTest extends AbstractServiceTest {
     public void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> userService.get(10));
     }
+
 }

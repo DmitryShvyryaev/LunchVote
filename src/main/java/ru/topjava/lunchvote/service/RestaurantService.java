@@ -1,7 +1,6 @@
 package ru.topjava.lunchvote.service;
 
 import ru.topjava.lunchvote.model.Restaurant;
-import ru.topjava.lunchvote.to.RestaurantWithMenu;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +16,7 @@ public interface RestaurantService {
 
     void delete(long id);
 
-    List<RestaurantWithMenu> getAllWithMenu(LocalDate date);
+    List<Restaurant> getAllWithMenu(LocalDate date);
 
-    RestaurantWithMenu getWithMenu(long id, LocalDate date);
+    Restaurant getWithMenu(long id, LocalDate date);
 }

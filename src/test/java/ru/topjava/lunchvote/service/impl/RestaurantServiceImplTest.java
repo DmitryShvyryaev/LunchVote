@@ -7,19 +7,25 @@ import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
+import ru.topjava.lunchvote.service.DishService;
 import ru.topjava.lunchvote.service.RestaurantService;
 import ru.topjava.lunchvote.testdata.DishTestData;
-import ru.topjava.lunchvote.to.RestaurantWithMenu;
 import ru.topjava.lunchvote.util.Matcher;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.Assert.assertThrows;
-import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 import static ru.topjava.lunchvote.testdata.DateTestData.*;
+import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 
 public class RestaurantServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private RestaurantService restaurantService;
+
+    @Autowired
+    private DishService dishService;
 
     @Before
     public void evictCache() {
@@ -75,25 +81,30 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
 
     @Test
     public void getAllWithMenu() {
-        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getAllWithMenu(FIRST_DAY), restWithMenuFirstDay);
-        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getAllWithMenu(SECOND_DAY), restWithMenuSecondDay);
+        List<Restaurant> actual = restaurantService.getAllWithMenu(FIRST_DAY);
+        RESTAURANT_MATCHER.assertMatch(actual, restWithMenuFirstDay);
+        for (Restaurant restaurant : actual) {
+            if (restaurant.getName().equals(rest1.getName()))
+                DishTestData.DISH_MATCHER.assertMatch(restaurant.getMenu(), DishTestData.tanukiFirstDay);
+            else if (restaurant.getName().equals(rest2.getName()))
+                DishTestData.DISH_MATCHER.assertMatch(restaurant.getMenu(), DishTestData.macFirstDay);
+            else
+                DishTestData.DISH_MATCHER.assertMatch(restaurant.getMenu(), Collections.emptyList());
+        }
     }
 
     @Test
     public void getWithMenu() {
-        RestaurantWithMenu actual = restaurantService.getWithMenu(START_SEQ_REST, FIRST_DAY);
+        Restaurant actual = restaurantService.getWithMenu(START_SEQ_REST, FIRST_DAY);
         Matcher.getComparator("menu").assertMatch(actual, rest1);
         DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), DishTestData.tanukiFirstDay);
     }
 
     @Test
     public void getWithMenuEmpty() {
-        RESTAURANT_WITH_MENU_MATCHER.assertMatch(restaurantService.getWithMenu(START_SEQ_REST + 2, FIRST_DAY), rest3WithMenuDay1);
+        Restaurant actual = restaurantService.getWithMenu(START_SEQ_REST + 2, FIRST_DAY);
+        Matcher.getComparator("menu").assertMatch(actual, rest3);
+        DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), Collections.emptyList());
     }
 
-    @Test
-    public void testCache() {
-        System.out.println(restaurantService.getAll());
-        System.out.println(restaurantService.getAll());
-    }
 }

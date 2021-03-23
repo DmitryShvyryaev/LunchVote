@@ -10,7 +10,9 @@ public class RestaurantUtil {
     private RestaurantUtil() {
     }
 
-    public static RestaurantWithMenu createRestWithMenu(Restaurant restaurant, List<Dish> menu) {
-        return new RestaurantWithMenu(restaurant.getId(), restaurant.getName(), restaurant.getDescription(), menu);
+    public static Restaurant createRestWithMenu(Restaurant restaurant, List<Dish> menu) {
+        Restaurant result = new Restaurant(restaurant);
+        result.setMenu(menu);
+        return result;
     }
 }

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict("users")
+    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User create(User user) {
         Assert.notNull(user, "User must not bu null.");
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict("users")
+    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict("users")
+    @CacheEvict(value = "users", allEntries = true)
     @Override
     public void delete(long id) {
         repository.deleteById(id);

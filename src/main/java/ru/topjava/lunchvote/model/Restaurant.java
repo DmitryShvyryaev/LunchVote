@@ -1,11 +1,9 @@
 package ru.topjava.lunchvote.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_name_idx")})
@@ -15,6 +13,9 @@ public class Restaurant extends AbstractNamedEntity {
     @NotBlank
     @Size(min = 10, max = 300)
     private String description;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    private List<Dish> menu;
 
     public Restaurant() {
     }
@@ -30,7 +31,7 @@ public class Restaurant extends AbstractNamedEntity {
     }
 
     public Restaurant(Restaurant restaurant) {
-        this(restaurant.id, restaurant.getName(), restaurant.getDescription());
+        this(restaurant.getId(), restaurant.getName(), restaurant.getDescription());
     }
 
     public String getDescription() {
@@ -39,6 +40,14 @@ public class Restaurant extends AbstractNamedEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Dish> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(List<Dish> menu) {
+        this.menu = menu;
     }
 
     @Override
