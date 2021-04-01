@@ -10,6 +10,10 @@ import static ru.topjava.lunchvote.testdata.DateTestData.*;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
 
 public class VoteTestData {
+
+    private VoteTestData() {
+    }
+
     public static final Matcher<Vote> VOTE_MATCHER = Matcher.getComparator("user");
 
     public static final long START_VOTE_ID = 100016L;

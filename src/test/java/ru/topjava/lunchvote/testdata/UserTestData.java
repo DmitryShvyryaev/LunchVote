@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 public class UserTestData {
+
+    private UserTestData() {
+    }
+
     public static final Matcher<User> USER_MATCHER = Matcher.getComparator("registered");
 
     public static final long USER_ID = 100000L;

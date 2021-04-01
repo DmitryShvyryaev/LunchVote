@@ -9,6 +9,10 @@ import static ru.topjava.lunchvote.testdata.DateTestData.*;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.rest2;
 
 public class DishTestData {
+
+    private DishTestData() {
+    }
+
     public static final long START_SEQ_DISH = 100008L;
 
     public static final Matcher<Dish> DISH_MATCHER = Matcher.getComparator("restaurant");

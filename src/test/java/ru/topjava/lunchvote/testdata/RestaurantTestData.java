@@ -1,19 +1,20 @@
 package ru.topjava.lunchvote.testdata;
 
+import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.model.Restaurant;
-import ru.topjava.lunchvote.to.RestaurantWithMenu;
-import ru.topjava.lunchvote.to.RestaurantWithRating;
 import ru.topjava.lunchvote.util.Matcher;
 
 import java.util.Collections;
 import java.util.List;
 
-import static ru.topjava.lunchvote.util.RestaurantUtil.*;
 import static ru.topjava.lunchvote.testdata.DishTestData.*;
 
 public class RestaurantTestData {
+
+    private RestaurantTestData() {
+    }
+
     public static final Matcher<Restaurant> RESTAURANT_MATCHER = Matcher.getComparator("menu");
-    public static final Matcher<RestaurantWithMenu> RESTAURANT_WITH_MENU_MATCHER = Matcher.getComparator();
 
     public static final long START_SEQ_REST = 100005L;
 
@@ -42,5 +43,11 @@ public class RestaurantTestData {
         updated.setName("Обновленный");
         updated.setDescription("Обновленный ресторан");
         return updated;
+    }
+
+    public static Restaurant createRestWithMenu(Restaurant restaurant, List<Dish> menu) {
+        Restaurant result = new Restaurant(restaurant);
+        result.setMenu(menu);
+        return result;
     }
 }

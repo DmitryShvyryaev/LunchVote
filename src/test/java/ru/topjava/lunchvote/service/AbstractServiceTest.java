@@ -1,54 +1,18 @@
 package ru.topjava.lunchvote.service;
 
-import org.junit.AfterClass;
-import org.junit.Rule;
-import org.junit.rules.Stopwatch;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.topjava.lunchvote.util.JpaUtil;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import ru.topjava.lunchvote.util.TimingExtension;
 
-import java.util.concurrent.TimeUnit;
-
-@ContextConfiguration({"classpath:spring/spring-config.xml", "classpath:spring-test.xml"})
-@RunWith(SpringRunner.class)
+@SpringJUnitConfig(locations = {"classpath:spring/spring-config.xml"})
 @Sql(scripts = "classpath:db/populate.sql", config = @SqlConfig(encoding = "UTF-8"))
+@ExtendWith(TimingExtension.class)
 public abstract class AbstractServiceTest {
-
-    protected static final Logger resultLog = LoggerFactory.getLogger("result");
-
-    protected static final StringBuilder results = new StringBuilder();
 
     @Autowired
     protected CacheManager cacheManager;
-
-    @Autowired
-    protected JpaUtil jpaUtil;
-
-    @Rule
-    public final Stopwatch stopwatch = new Stopwatch() {
-        @Override
-        protected void finished(long nanos, Description description) {
-            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-            results.append(result);
-            resultLog.info(result + " ms\n");
-        }
-    };
-
-    @AfterClass
-    public static void printResult() {
-        resultLog.info("\n---------------------------------" +
-                "\nTest                 Duration, ms" +
-                "\n---------------------------------" +
-                results +
-                "\n---------------------------------");
-        results.setLength(0);
-    }
 }
