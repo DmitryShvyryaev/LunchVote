@@ -1,6 +1,7 @@
 package ru.topjava.lunchvote.model;
 
 import ch.qos.logback.core.joran.action.IncludeAction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -26,6 +27,7 @@ public class Dish extends AbstractNamedEntity {
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Restaurant restaurant;
 
     public Dish() {

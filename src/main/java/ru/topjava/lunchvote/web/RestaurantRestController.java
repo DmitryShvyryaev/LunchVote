@@ -22,10 +22,10 @@ import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;
 @RequestMapping(value = RestaurantRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantRestController {
 
-    static final String REST_URL = "/rest/restaurants";
-    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private RestaurantService restaurantService;
+    static final String REST_URL = "/rest/restaurants";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @GetMapping
     public List<Restaurant> getAll() {
@@ -73,6 +73,7 @@ public class RestaurantRestController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
         log.info("Delete restaurant with id {}", id);
         restaurantService.delete(id);

@@ -1,5 +1,7 @@
 package ru.topjava.lunchvote.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -15,6 +17,7 @@ public class Restaurant extends AbstractNamedEntity {
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @JsonManagedReference
     private List<Dish> menu;
 
     public Restaurant() {

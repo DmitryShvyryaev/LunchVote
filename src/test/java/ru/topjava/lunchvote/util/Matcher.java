@@ -20,4 +20,5 @@ public class Matcher<T> {
     public void assertMatch(Iterable<T> actual, Iterable<T> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields(ignoredFields).isEqualTo(expected);
     }
+
 }
