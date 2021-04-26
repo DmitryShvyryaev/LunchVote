@@ -1,21 +1,16 @@
-package ru.topjava.lunchvote.web;
+package ru.topjava.lunchvote.web.restaurant;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.model.Restaurant;
-import ru.topjava.lunchvote.service.DishService;
-import ru.topjava.lunchvote.service.RestaurantService;
-import ru.topjava.lunchvote.util.JsonReader;
+import ru.topjava.lunchvote.util.JsonConverter;
+import ru.topjava.lunchvote.web.AbstractControllerTest;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,20 +18,14 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
-import static ru.topjava.lunchvote.web.RestaurantRestController.REST_URL;
 import static ru.topjava.lunchvote.testdata.DishTestData.DISH_MATCHER;
+import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
+import static ru.topjava.lunchvote.web.restaurant.RestaurantController.REST_URL;
 
-class RestaurantRestControllerTest extends AbstractControllerTest {
-
-    @Autowired
-    private JsonReader jsonReader;
-
-    @Autowired
-    private RestaurantService restaurantService;
+class RestaurantControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private DishService dishService;
+    private JsonConverter jsonConverter;
 
     @BeforeEach
     public void evictCache() {
@@ -51,7 +40,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<Restaurant> actual = jsonReader.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        List<Restaurant> actual = jsonConverter.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, restaurants);
     }
 
@@ -63,7 +52,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        Restaurant actual = jsonReader.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        Restaurant actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, rest1);
     }
 
@@ -79,7 +68,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<Restaurant> actual = jsonReader.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        List<Restaurant> actual = jsonConverter.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, restaurants);
         for (Restaurant restaurant : actual) {
             List<Dish> currentMenu = expectedMenu.get(restaurant.id());
@@ -96,55 +85,8 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        Restaurant actual = jsonReader.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        Restaurant actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, rest1);
         DISH_MATCHER.assertMatch(actual.getMenu(), expectedMenu);
-    }
-
-    @Test
-    void create() throws Exception {
-        Restaurant newRestaurant = getCreated();
-        MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonReader.writeValue(newRestaurant)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        Restaurant created = jsonReader.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
-        long id = created.id();
-        newRestaurant.setId(id);
-        RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(restaurantService.get(id), newRestaurant);
-    }
-
-    @Test
-    void update() throws Exception {
-        Restaurant updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + "/" + updated.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonReader.writeValue(updated)))
-                .andExpect(status().isNoContent());
-
-        Restaurant actual = restaurantService.get(updated.id());
-        RESTAURANT_MATCHER.assertMatch(actual, updated);
-    }
-
-    @Test
-    void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + START_SEQ_REST))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-        Assertions.assertThrows(NotFoundException.class, () -> restaurantService.get(START_SEQ_REST));
-    }
-
-    private List<Dish> populateMenu(long restaurantId, int countOfDishes) {
-        LocalDate today = LocalDate.now();
-        List<Dish> result = new ArrayList<>();
-        for (int i = 0; i < countOfDishes; i++) {
-            Dish dish = new Dish("name" + restaurantId + (i * 10), restaurantId + (i * 100) + 0.1, today);
-            result.add(dish);
-            dishService.create(dish, restaurantId);
-        }
-        return result;
     }
 }

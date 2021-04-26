@@ -23,7 +23,7 @@ public class DishServiceImplTest extends AbstractServiceTest {
     private DishService dishService;
 
     @Test
-    void getAll() {
+    void getAllForRestaurant() {
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), tanukiFirstDay);
         DISH_MATCHER.assertMatch(dishService.getAll(SECOND_DAY, START_SEQ_REST), tanukiSecondDay);
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST + 1), macFirstDay);
@@ -33,45 +33,50 @@ public class DishServiceImplTest extends AbstractServiceTest {
 
     @Test
     void get() {
-        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH), tanukiFirstDayDish1);
+        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH, START_SEQ_REST), tanukiFirstDayDish1);
     }
 
     @Test
     void getNotFound() {
-        assertThrows(NotFoundException.class, () -> dishService.get(10));
+        assertThrows(NotFoundException.class, () -> dishService.get(10, START_SEQ_REST));
+    }
+
+    @Test
+    void getNotOwn() {
+        assertThrows(NotFoundException.class, () -> dishService.get(START_SEQ_DISH, START_SEQ_REST + 1));
     }
 
     @Test
     void create() {
-        Dish created = dishService.create(getCreated(), START_SEQ_REST + 2);
+        Dish created = dishService.create(START_SEQ_REST + 2, getCreated());
         Dish newDish = getCreated();
         newDish.setId(created.id());
         DISH_MATCHER.assertMatch(newDish, created);
-        DISH_MATCHER.assertMatch(dishService.get(created.id()), created);
+        DISH_MATCHER.assertMatch(dishService.get(created.id(), START_SEQ_REST + 2), created);
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST + 2), List.of(newDish));
     }
 
     @Test
     void createDuplicateName() {
-        assertThrows(DataAccessException.class, () -> dishService.create(new Dish("Мисо-суп", 99.99, FIRST_DAY), START_SEQ_REST));
+        assertThrows(DataAccessException.class, () -> dishService.create(START_SEQ_REST, new Dish("Мисо-суп", 99.99, FIRST_DAY)));
     }
 
     @Test
     void update() {
-        dishService.update(getUpdated());
-        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH), getUpdated());
+        dishService.update(START_SEQ_REST, getUpdated());
+        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH, START_SEQ_REST + 1), getUpdated());
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), List.of(tanukiFirstDayDish2));
     }
 
     @Test
     void delete() {
-        dishService.delete(START_SEQ_DISH);
-        assertThrows(NotFoundException.class, () -> dishService.get(START_SEQ_DISH));
+        dishService.delete(START_SEQ_REST, START_SEQ_DISH);
+        assertThrows(NotFoundException.class, () -> dishService.get(START_SEQ_DISH, START_SEQ_REST));
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), List.of(tanukiFirstDayDish2));
     }
 
     @Test
     void deleteNotFound() {
-        assertThrows(NotFoundException.class, () -> dishService.get(10));
+        assertThrows(NotFoundException.class, () -> dishService.get(10, START_SEQ_REST));
     }
 }

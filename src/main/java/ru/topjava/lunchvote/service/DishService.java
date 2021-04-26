@@ -8,11 +8,11 @@ import java.util.List;
 public interface DishService {
     List<Dish> getAll(LocalDate date, long restaurantId);
 
-    Dish get(long id);
+    Dish get(long id, long restaurantId);
 
-    Dish create(Dish dish, long restaurantId);
+    Dish create(long restaurantId, Dish dish);
 
-    Dish update(Dish dish);
+    Dish update(long restaurantId, Dish dish);
 
-    void delete(long id);
+    void delete(long restaurantId, long id);
 }

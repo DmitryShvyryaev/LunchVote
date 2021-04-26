@@ -33,14 +33,15 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public Dish get(long id) {
-        return checkNotFoundWithId(repository.findById(id).orElse(null), id);
+    public Dish get(long id, long restaurantId) {
+        Restaurant owner = restaurantRepository.getOne(restaurantId);
+        return checkNotFoundWithId(repository.findByIdAndAndRestaurant(id, owner).orElse(null), id);
     }
 
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
-    public Dish create(Dish dish, long restaurantId) {
+    public Dish create(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
         dish.setRestaurant(restaurantRepository.getOne(restaurantId));
         return repository.save(dish);
@@ -49,15 +50,16 @@ public class DishServiceImpl implements DishService {
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
-    public Dish update(Dish dish) {
+    public Dish update(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
-        return checkNotFoundWithId(repository.save(dish), dish.id());
+        get(dish.id(), restaurantId);
+        return repository.save(dish);
     }
 
     @Transactional
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
-    public void delete(long id) {
-        repository.deleteById(id);
+    public void delete(long restaurantId, long id) {
+        checkNotFoundWithId(repository.delete(id, restaurantId) != 0, id);
     }
 }

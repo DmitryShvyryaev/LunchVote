@@ -1,16 +1,16 @@
 package ru.topjava.lunchvote.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MvcResult;
-import ru.topjava.lunchvote.web.json.JacksonObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public class JsonReader {
+public class JsonConverter {
 
     @Autowired
     private ObjectMapper mapper;
@@ -38,5 +38,12 @@ public class JsonReader {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Invalid write to JSON:\n'" + entity + "'", e);
         }
+    }
+
+    public <T> String writeAdditionProperties(T entity, String addName, Object addValue) {
+        Map<String, Object> map = mapper.convertValue(entity, new TypeReference<>() {
+        });
+        map.putAll(Map.of(addName, addValue));
+        return writeValue(map);
     }
 }

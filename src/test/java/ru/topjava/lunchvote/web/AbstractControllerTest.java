@@ -11,8 +11,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.service.DishService;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringJUnitWebConfig(locations = {"classpath:spring/spring-config.xml",
         "classpath:spring/spring-mvc.xml",
@@ -28,8 +33,11 @@ public abstract class AbstractControllerTest {
     }
 
     @Autowired
+    protected DishService dishService;
+
+    @Autowired
     protected CacheManager cacheManager;
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -40,5 +48,15 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    protected List<Dish> populateMenu(long restaurantId, int countOfDishes) {
+        LocalDate today = LocalDate.now();
+        List<Dish> result = new ArrayList<>();
+        for (int i = 0; i < countOfDishes; i++) {
+            Dish dish = new Dish("name" + restaurantId + (i * 10), restaurantId + (i * 100) + 0.1, today);
+            result.add(dishService.create(restaurantId, dish));
+        }
+        return result;
     }
 }
