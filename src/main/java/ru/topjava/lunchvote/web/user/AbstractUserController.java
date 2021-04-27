@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.UserService;
+import ru.topjava.lunchvote.to.UserTo;
 
 import java.util.List;
 
 import static ru.topjava.lunchvote.util.ValidationUtil.assureIdConsistent;
+import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;
 
 public abstract class AbstractUserController {
 
@@ -33,7 +35,14 @@ public abstract class AbstractUserController {
 
     public User create(User user) {
         log.info("Create user {}", user);
+        checkNew(user);
         return userService.create(user);
+    }
+
+    public User create(UserTo userTo) {
+        log.info("Create user {}", userTo);
+        checkNew(userTo);
+        return userService.create(userTo);
     }
 
     public void update(User user, long id) {
@@ -42,8 +51,19 @@ public abstract class AbstractUserController {
         userService.update(user);
     }
 
+    public void update(UserTo userTo, long id) {
+        log.info("Update user {} with id {}", userTo, id);
+        assureIdConsistent(userTo, id);
+        userService.update(userTo);
+    }
+
     public void delete(long id) {
         log.info("Delete user with id {}", id);
         userService.delete(id);
+    }
+
+    public void enable(int id, boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        userService.enable(id, enabled);
     }
 }

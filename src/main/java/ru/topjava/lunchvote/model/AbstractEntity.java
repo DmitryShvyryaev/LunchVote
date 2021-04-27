@@ -2,13 +2,14 @@ package ru.topjava.lunchvote.model;
 
 import org.springframework.data.domain.Persistable;
 import org.springframework.util.Assert;
+import ru.topjava.lunchvote.HasId;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public class AbstractEntity implements Persistable<Long> {
+public class AbstractEntity implements Persistable<Long>, HasId {
     public static final int START_SEQ = 100000;
 
     @Id
@@ -28,17 +29,20 @@ public class AbstractEntity implements Persistable<Long> {
         return id;
     }
 
-    public long id() {
-        Assert.notNull(id, "Entity must have id.");
-        return id;
+    @Override
+    public boolean isNew() {
+        return getId() == null;
     }
 
-    public void setId(long id) {
+    @Override
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public boolean isNew() {
-        return this.id == null;
+    @Override
+    public long id() {
+        Assert.notNull(id, "Entity must have id");
+        return id;
     }
 
     @Override

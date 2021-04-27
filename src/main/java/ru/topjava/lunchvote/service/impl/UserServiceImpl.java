@@ -8,9 +8,12 @@ import org.springframework.util.Assert;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.UserRepository;
 import ru.topjava.lunchvote.service.UserService;
+import ru.topjava.lunchvote.to.UserTo;
 
 import java.util.List;
 
+import static ru.topjava.lunchvote.util.UserUtil.createFromTo;
+import static ru.topjava.lunchvote.util.UserUtil.updateFromTo;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFound;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
@@ -50,6 +53,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     @Override
+    public User create(UserTo userTo) {
+        Assert.notNull(userTo, "User must not bu null.");
+        User user = createFromTo(userTo);
+        return repository.save(user);
+    }
+
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
         return checkNotFoundWithId(repository.save(user), user.id());
@@ -58,7 +70,23 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     @Override
+    public User update(UserTo userTo) {
+        User user = get(userTo.getId());
+        return repository.save(updateFromTo(user, userTo));
+    }
+
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    @Override
     public void delete(long id) {
         repository.deleteById(id);
+    }
+
+    @Transactional
+    @CacheEvict(value = "users", allEntries = true)
+    @Override
+    public void enable(long id, boolean enable) {
+        User user = get(id);
+        user.setEnabled(enable);
     }
 }

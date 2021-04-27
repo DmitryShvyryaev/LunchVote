@@ -1,6 +1,7 @@
 package ru.topjava.lunchvote.service.impl;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,5 +80,13 @@ public class UserServiceImplTest extends AbstractServiceTest {
     @Test
     void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> userService.get(10));
+    }
+
+    @Test
+    void enable() {
+        userService.enable(USER_ID, false);
+        Assertions.assertFalse(userService.get(USER_ID).isEnabled());
+        userService.enable(USER_ID, true);
+        Assertions.assertTrue(userService.get(USER_ID).isEnabled());
     }
 }

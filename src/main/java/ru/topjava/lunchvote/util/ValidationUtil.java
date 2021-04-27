@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.util;
 
+import ru.topjava.lunchvote.HasId;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.AbstractEntity;
 
@@ -27,13 +28,13 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkNew(AbstractEntity entity) {
+    public static void checkNew(HasId entity) {
         if (!entity.isNew()) {
             throw new IllegalArgumentException(entity + " must be new.");
         }
     }
 
-    public static void assureIdConsistent(AbstractEntity entity, long id) {
+    public static void assureIdConsistent(HasId entity, long id) {
         if (entity.isNew()) {
             entity.setId(id);
         } else if (entity.id() != id) {
