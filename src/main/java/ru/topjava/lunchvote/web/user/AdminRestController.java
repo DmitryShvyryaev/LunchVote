@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminRestController extends AbstractUserController {
 
-    static final String REST_URL = "rest/admin/users";
+    static final String REST_URL = "/rest/admin/users";
 
     @Override
     @GetMapping
@@ -35,7 +35,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestParam User user) {
+    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
         User created = super.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
@@ -47,7 +47,7 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestParam User user,@PathVariable long id) {
+    public void update(@RequestBody User user, @PathVariable long id) {
         super.update(user, id);
     }
 
@@ -56,5 +56,12 @@ public class AdminRestController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
         super.delete(id);
+    }
+
+    @Override
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enable(@PathVariable long id,@RequestParam boolean enabled) {
+        super.enable(id, enabled);
     }
 }
