@@ -64,8 +64,7 @@ public class DishServiceImplTest extends AbstractServiceTest {
     @Test
     void update() {
         dishService.update(START_SEQ_REST, getUpdated());
-        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH, START_SEQ_REST + 1), getUpdated());
-        DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), List.of(tanukiFirstDayDish2));
+        DISH_MATCHER.assertMatch(dishService.get(START_SEQ_DISH, START_SEQ_REST), getUpdated());
     }
 
     @Test

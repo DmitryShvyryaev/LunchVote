@@ -42,7 +42,6 @@ public class DishTestData {
     public static Dish getUpdated() {
         Dish dish = new Dish(tanukiFirstDayDish1);
         dish.setDate(SECOND_DAY);
-        dish.setRestaurant(rest2);
         dish.setPrice(1000.0);
         return dish;
     }

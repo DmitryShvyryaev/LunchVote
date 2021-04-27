@@ -43,13 +43,13 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         Dish updated = getUpdated();
-        MvcResult result = perform(MockMvcRequestBuilders.put(REST_URL + updated.id())
+        perform(MockMvcRequestBuilders.put(REST_URL + updated.id())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonConverter.writeAdditionProperties(updated, "restaurant", updated.getRestaurant())))
+                .content(jsonConverter.writeValue(updated)))
                 .andExpect(status().isNoContent())
                 .andReturn();
 
-        Dish actual = dishService.get(updated.id(), updated.getRestaurant().id());
+        Dish actual = dishService.get(updated.id(), START_SEQ_REST);
         DISH_MATCHER.assertMatch(actual, updated);
     }
 
