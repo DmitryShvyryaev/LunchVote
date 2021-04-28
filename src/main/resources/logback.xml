@@ -13,11 +13,11 @@
 
     <logger name="ru.topjava.lunchvote" level="debug"/>
 
-    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="debug" additivity="false">
-        <appender-ref ref="console"/>
-    </logger>
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="debug" additivity="false"/>
 
     <logger name="org.springframework.web.servlet" level="debug"/>
+
+    <logger name="org.springframework.security" level="debug"/>
 
     <root level="info">
         <appender-ref ref="console"/>

@@ -36,34 +36,37 @@ class ProfileUserControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL))
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(user2)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         User actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), User.class);
-        USER_MATCHER.assertMatch(actual, admin);
+        USER_MATCHER.assertMatch(actual, user2);
     }
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL))
+        perform(MockMvcRequestBuilders.delete(REST_URL)
+                .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        Assertions.assertThrows(NotFoundException.class, () -> userService.get(USER_ID));
+        Assertions.assertThrows(NotFoundException.class, () -> userService.get(USER_ID + 1));
     }
 
     @Test
     void update() throws Exception {
         UserTo updated = new UserTo(null, "updated", "update@yahoo.com", "updatePass");
         perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(user1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID), UserUtil.updateFromTo(new User(admin), updated));
+        USER_MATCHER.assertMatch(userService.get(USER_ID + 1), UserUtil.updateFromTo(new User(user1), updated));
     }
 
     @Test

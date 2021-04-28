@@ -2,13 +2,17 @@ package ru.topjava.lunchvote.service.impl;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.UserRepository;
 import ru.topjava.lunchvote.service.UserService;
 import ru.topjava.lunchvote.to.UserTo;
+import ru.topjava.lunchvote.web.security.AuthorizedUser;
 
 import java.util.List;
 
@@ -17,13 +21,16 @@ import static ru.topjava.lunchvote.util.UserUtil.updateFromTo;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFound;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
-@Service
+@Service("userService")
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
 
-    public UserServiceImpl(UserRepository repository) {
+    private final PasswordEncoder encoder;
+
+    public UserServiceImpl(UserRepository repository, PasswordEncoder encoder) {
         this.repository = repository;
+        this.encoder = encoder;
     }
 
     @Cacheable(value = "users")
@@ -47,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) {
         Assert.notNull(user, "User must not bu null.");
-        return repository.save(user);
+        return prepareAndSave(user);
     }
 
     @Transactional
@@ -56,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public User create(UserTo userTo) {
         Assert.notNull(userTo, "User must not bu null.");
         User user = createFromTo(userTo);
-        return repository.save(user);
+        return prepareAndSave(user);
     }
 
     @Transactional
@@ -64,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
-        return checkNotFoundWithId(repository.save(user), user.id());
+        return checkNotFoundWithId(prepareAndSave(user), user.id());
     }
 
     @Transactional
@@ -72,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(UserTo userTo) {
         User user = get(userTo.getId());
-        return repository.save(updateFromTo(user, userTo));
+        return prepareAndSave(updateFromTo(user, userTo));
     }
 
     @Transactional
@@ -88,5 +95,17 @@ public class UserServiceImpl implements UserService {
     public void enable(long id, boolean enable) {
         User user = get(id);
         user.setEnabled(enable);
+    }
+
+    @Override
+    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = repository.findByEmail(email.toLowerCase()).orElseThrow(() -> new UsernameNotFoundException("User " + email + " is not found"));
+        return new AuthorizedUser(user);
+    }
+
+    private User prepareAndSave(User user) {
+        String password = user.getPassword();
+        user.setPassword(StringUtils.hasText(password) ? encoder.encode(password) : password);
+        return repository.save(user);
     }
 }

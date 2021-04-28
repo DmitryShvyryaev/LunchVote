@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.topjava.lunchvote.testdata.DishTestData.*;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.START_SEQ_REST;
+import static ru.topjava.lunchvote.testdata.UserTestData.admin;
+import static ru.topjava.lunchvote.testdata.UserTestData.user1;
 
 class AdminDishControllerTest extends AbstractControllerTest {
 
@@ -28,6 +30,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         Dish newDish = getCreated();
         MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(newDish)))
                 .andExpect(status().isCreated())
@@ -44,6 +47,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Dish updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + updated.id())
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(updated)))
                 .andExpect(status().isNoContent())
@@ -57,9 +61,23 @@ class AdminDishControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         List<Dish> dishes = populateMenu(START_SEQ_REST, 1);
         long id = dishes.get(0).id();
-        perform(MockMvcRequestBuilders.delete(REST_URL + id))
+        perform(MockMvcRequestBuilders.delete(REST_URL + id)
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         Assertions.assertThrows(NotFoundException.class, () -> dishService.get(id, START_SEQ_REST));
+    }
+
+    @Test
+    void createUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void createForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(user1)))
+                .andExpect(status().isForbidden());
     }
 }

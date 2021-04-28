@@ -2,22 +2,26 @@ package ru.topjava.lunchvote.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.DishService;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @SpringJUnitWebConfig(locations = {"classpath:spring/spring-config.xml",
         "classpath:spring/spring-mvc.xml",
@@ -43,7 +47,10 @@ public abstract class AbstractControllerTest {
 
     @PostConstruct
     private void postConstruct() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilters(CHARACTER_ENCODING_FILTER).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilters(CHARACTER_ENCODING_FILTER)
+                .apply(springSecurity())
+                .build();
     }
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
@@ -58,5 +65,9 @@ public abstract class AbstractControllerTest {
             result.add(dishService.create(restaurantId, dish));
         }
         return result;
+    }
+
+    protected RequestPostProcessor userHttpBasic(User user) {
+        return SecurityMockMvcRequestPostProcessors.httpBasic(user.getEmail(), user.getPassword());
     }
 }

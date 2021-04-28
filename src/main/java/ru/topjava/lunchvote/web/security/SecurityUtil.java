@@ -1,4 +1,4 @@
-package ru.topjava.lunchvote.web;
+package ru.topjava.lunchvote.web.security;
 
 public class SecurityUtil {
 
