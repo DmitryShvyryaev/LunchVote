@@ -86,4 +86,17 @@ class ProfileUserControllerTest extends AbstractControllerTest {
         USER_MATCHER.assertMatch(created, newUser);
         USER_MATCHER.assertMatch(userService.get(newId), newUser);
     }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void registerAuth() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL + "/register")
+                .with(userHttpBasic(user1)))
+                .andExpect(status().isForbidden());
+    }
 }

@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.topjava.lunchvote.testdata.DishTestData.DISH_MATCHER;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
+import static ru.topjava.lunchvote.testdata.UserTestData.user1;
 import static ru.topjava.lunchvote.web.restaurant.RestaurantController.REST_URL;
 
 class RestaurantControllerTest extends AbstractControllerTest {
@@ -34,7 +35,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL))
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -46,7 +48,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/" + START_SEQ_REST))
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/" + START_SEQ_REST)
+                .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -62,7 +65,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
         expectedMenu.put(START_SEQ_REST, populateMenu(START_SEQ_REST, 3));
         expectedMenu.put(START_SEQ_REST + 1, populateMenu(START_SEQ_REST + 1, 5));
         expectedMenu.put(START_SEQ_REST + 2, populateMenu(START_SEQ_REST + 2, 4));
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/with-menu"))
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/with-menu")
+                .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -79,7 +83,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     void getWithMenu() throws Exception {
         List<Dish> expectedMenu = populateMenu(START_SEQ_REST, 3);
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/" + START_SEQ_REST + "/with-menu"))
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/" + START_SEQ_REST + "/with-menu")
+                .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -88,5 +93,11 @@ class RestaurantControllerTest extends AbstractControllerTest {
         Restaurant actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, rest1);
         DISH_MATCHER.assertMatch(actual.getMenu(), expectedMenu);
+    }
+
+    @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
     }
 }
