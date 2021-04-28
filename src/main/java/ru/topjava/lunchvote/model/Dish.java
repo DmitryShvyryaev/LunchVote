@@ -17,7 +17,7 @@ public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
     @NotNull
-    private Double price;
+    private Long price;
 
     @Column(name = "date", nullable = false)
     @NotNull
@@ -33,19 +33,19 @@ public class Dish extends AbstractNamedEntity {
     public Dish() {
     }
 
-    public Dish(String name, Double price, LocalDate date) {
+    public Dish(String name, Long price, LocalDate date) {
         this.name = name;
         this.price = price;
         this.date = date;
     }
 
-    public Dish(Long id, String name, Double price, LocalDate date) {
+    public Dish(Long id, String name, Long price, LocalDate date) {
         super(id, name);
         this.price = price;
         this.date = date;
     }
 
-    public Dish(Long id, String name, Double price, LocalDate date, Restaurant restaurant) {
+    public Dish(Long id, String name, Long price, LocalDate date, Restaurant restaurant) {
         super(id, name);
         this.price = price;
         this.date = date;
@@ -55,11 +55,11 @@ public class Dish extends AbstractNamedEntity {
         this(dish.id, dish.name, dish.getPrice(), dish.date);
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

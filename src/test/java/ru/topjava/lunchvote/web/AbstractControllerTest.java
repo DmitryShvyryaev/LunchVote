@@ -61,7 +61,7 @@ public abstract class AbstractControllerTest {
         LocalDate today = LocalDate.now();
         List<Dish> result = new ArrayList<>();
         for (int i = 0; i < countOfDishes; i++) {
-            Dish dish = new Dish("name" + restaurantId + (i * 10), restaurantId + (i * 100) + 0.1, today);
+            Dish dish = new Dish("name" + restaurantId + (i * 10), restaurantId + (i * 101L), today);
             result.add(dishService.create(restaurantId, dish));
         }
         return result;

@@ -11,6 +11,7 @@ import ru.topjava.lunchvote.service.RestaurantService;
 import ru.topjava.lunchvote.testdata.DishTestData;
 import ru.topjava.lunchvote.util.Matcher;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 
@@ -101,5 +102,11 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
         Restaurant actual = restaurantService.getWithMenu(START_SEQ_REST + 2, FIRST_DAY);
         Matcher.getComparator("menu").assertMatch(actual, rest3);
         DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), Collections.emptyList());
+    }
+
+    @Test
+    void createInvalid() {
+        validateRootCause(ConstraintViolationException.class, () -> restaurantService.create(new Restaurant("22", "description123")));
+        validateRootCause(ConstraintViolationException.class, () -> restaurantService.create(new Restaurant("name", "descr")));
     }
 }

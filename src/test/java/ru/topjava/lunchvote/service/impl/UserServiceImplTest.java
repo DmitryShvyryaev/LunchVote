@@ -7,12 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
+import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.model.Role;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.UserService;
 
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.topjava.lunchvote.testdata.RestaurantTestData.START_SEQ_REST;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
 
 public class UserServiceImplTest extends AbstractServiceTest {
@@ -88,5 +95,17 @@ public class UserServiceImplTest extends AbstractServiceTest {
         Assertions.assertFalse(userService.get(USER_ID).isEnabled());
         userService.enable(USER_ID, true);
         Assertions.assertTrue(userService.get(USER_ID).isEnabled());
+    }
+
+    @Test
+    void createInvalid() {
+        validateRootCause(ConstraintViolationException.class, () -> userService.create(
+                new User(null, "  ", "User@email.ru", "password", Role.USER)));
+        validateRootCause(ConstraintViolationException.class, () -> userService.create(
+                new User(null, "User", "not email", "password", Role.USER)));
+        validateRootCause(ConstraintViolationException.class, () -> userService.create(
+                new User(null, "User", "User@email.ru", "  ", Role.USER)));
+        validateRootCause(ConstraintViolationException.class, () -> userService.create(
+                new User(null, "User", "User@email.ru", "password", true, null, Set.of())));;
     }
 }

@@ -2,10 +2,12 @@ package ru.topjava.lunchvote.service.impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.model.Vote;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.VoteService;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -69,4 +71,7 @@ public class VoteServiceImplTest extends AbstractServiceTest {
         assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
     }
 
+    @Test
+    void createInvalid() {
+    }
 }

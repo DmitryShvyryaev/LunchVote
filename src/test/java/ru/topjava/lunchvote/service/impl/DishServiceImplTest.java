@@ -5,9 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.DishService;
 
+import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,7 +61,7 @@ public class DishServiceImplTest extends AbstractServiceTest {
 
     @Test
     void createDuplicateName() {
-        assertThrows(DataAccessException.class, () -> dishService.create(START_SEQ_REST, new Dish("Мисо-суп", 99.99, FIRST_DAY)));
+        assertThrows(DataAccessException.class, () -> dishService.create(START_SEQ_REST, new Dish("Мисо-суп", 9999L, FIRST_DAY)));
     }
 
     @Test
@@ -77,5 +80,12 @@ public class DishServiceImplTest extends AbstractServiceTest {
     @Test
     void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> dishService.get(10, START_SEQ_REST));
+    }
+
+    @Test
+    void createInvalid() {
+        validateRootCause(ConstraintViolationException.class, () -> dishService.create(START_SEQ_REST, new Dish("na", 9999L, LocalDate.now())));
+        validateRootCause(ConstraintViolationException.class, () -> dishService.create(START_SEQ_REST, new Dish("name", null, LocalDate.now())));
+        validateRootCause(ConstraintViolationException.class, () -> dishService.create(START_SEQ_REST, new Dish("name", 9999L, null)));
     }
 }
