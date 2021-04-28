@@ -27,49 +27,49 @@ public class VoteServiceImplTest extends AbstractServiceTest {
     @Autowired
     private VoteService voteService;
 
-    @Test
-    void getAllByDate() {
-        List<Vote> actual = voteService.getAllByDate(FIRST_DAY);
-        VOTE_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
-        USER_MATCHER.assertMatch(actual.stream().map(Vote::getUser).collect(Collectors.toList()), users);
-    }
-
-    @Test
-    void getAllWithoutVotes() {
-        VOTE_MATCHER.assertMatch(voteService.getAllByDate(THIRD_DAY), Collections.emptyList());
-    }
-
-    @Test
-    void getCountByDate() {
-        assertEquals(3, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
-        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
-        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 2));
-        assertEquals(0, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST));
-        assertEquals(2, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST + 1));
-        assertEquals(3, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST + 2));
-    }
-
-    @Test
-    void vote() {
-        assertTrue(voteService.vote(LocalDateTime.of(THIRD_DAY, LocalTime.of(11, 20)), 100000, START_SEQ_REST));
-        assertEquals(1, (int) voteService.getCountByDate(THIRD_DAY, START_SEQ_REST));
-    }
-
-    @Test
-    void voteAgainBeforeEleven() {
-        assertTrue(voteService.vote(LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 0)), 100000,
-                START_SEQ_REST + 1));
-        assertEquals(2, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
-        assertEquals(2, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
-    }
-
-    @Test
-    void voteAgainAfterEleven() {
-        assertFalse(voteService.vote(LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 10)), 100000,
-                START_SEQ_REST + 1));
-        assertEquals(3, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
-        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
-    }
+//    @Test
+//    void getAllByDate() {
+//        List<Vote> actual = voteService.getAllByDate(FIRST_DAY);
+//        VOTE_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
+//        USER_MATCHER.assertMatch(actual.stream().map(Vote::getUser).collect(Collectors.toList()), users);
+//    }
+//
+//    @Test
+//    void getAllWithoutVotes() {
+//        VOTE_MATCHER.assertMatch(voteService.getAllByDate(THIRD_DAY), Collections.emptyList());
+//    }
+//
+//    @Test
+//    void getCountByDate() {
+//        assertEquals(3, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
+//        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
+//        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 2));
+//        assertEquals(0, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST));
+//        assertEquals(2, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST + 1));
+//        assertEquals(3, (int) voteService.getCountByDate(SECOND_DAY, START_SEQ_REST + 2));
+//    }
+//
+//    @Test
+//    void vote() {
+//        assertTrue(voteService.vote(LocalDateTime.of(THIRD_DAY, LocalTime.of(11, 20)), 100000, START_SEQ_REST));
+//        assertEquals(1, (int) voteService.getCountByDate(THIRD_DAY, START_SEQ_REST));
+//    }
+//
+//    @Test
+//    void voteAgainBeforeEleven() {
+//        assertTrue(voteService.vote(LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 0)), 100000,
+//                START_SEQ_REST + 1));
+//        assertEquals(2, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
+//        assertEquals(2, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
+//    }
+//
+//    @Test
+//    void voteAgainAfterEleven() {
+//        assertFalse(voteService.vote(LocalDateTime.of(FIRST_DAY, LocalTime.of(11, 10)), 100000,
+//                START_SEQ_REST + 1));
+//        assertEquals(3, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST));
+//        assertEquals(1, (int) voteService.getCountByDate(FIRST_DAY, START_SEQ_REST + 1));
+//    }
 
     @Test
     void createInvalid() {

@@ -1,15 +1,18 @@
 package ru.topjava.lunchvote.service;
 
-import ru.topjava.lunchvote.model.Vote;
+import ru.topjava.lunchvote.to.VoteTo;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VoteService {
-    boolean vote(LocalDateTime dateTime, long userId, long restaurantId);
+    VoteTo create(VoteTo voteTo, long userId);
 
-    List<Vote> getAllByDate(LocalDate date);
+    boolean delete(long id);
 
-    Integer getCountByDate(LocalDate date, long restaurantId);
+    VoteTo get(LocalDate date, long userId);
+
+    List<VoteTo> getAllByDate(LocalDate date);
+
+    void clear(LocalDate startDate, LocalDate endDate);
 }
