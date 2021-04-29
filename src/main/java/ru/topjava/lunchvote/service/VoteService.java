@@ -8,9 +8,11 @@ import java.util.List;
 public interface VoteService {
     VoteTo create(VoteTo voteTo, long userId);
 
-    boolean delete(long id);
+    void delete(long id, long userId);
 
     VoteTo get(LocalDate date, long userId);
+
+    List<VoteTo> getAllByUser(long userId);
 
     List<VoteTo> getAllByDate(LocalDate date);
 
