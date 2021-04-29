@@ -2,6 +2,7 @@ package ru.topjava.lunchvote.web.vote;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.topjava.lunchvote.service.VoteService;
@@ -30,14 +31,8 @@ public class AdminVoteController {
     }
 
     @GetMapping("/byDate")
-    public List<VoteTo> getAllByDate(@RequestBody LocalDate date) {
+    public List<VoteTo> getAllByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         log.info("Get all votes by date {}", date);
         return voteService.getAllByDate(date);
-    }
-
-    @DeleteMapping("/byDate")
-    public void deleteByDate(@RequestBody LocalDate date) {
-        log.info("Delete all votes by date {}", date);
-        voteService.deleteByDate(date);
     }
 }

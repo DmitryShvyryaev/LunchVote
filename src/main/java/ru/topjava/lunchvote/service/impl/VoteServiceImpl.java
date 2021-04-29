@@ -72,12 +72,6 @@ public class VoteServiceImpl implements VoteService {
         return getTosFromVotes(voteRepository.findAllByDate(date));
     }
 
-    @Override
-    @Transactional
-    public void deleteByDate(LocalDate date) {
-        voteRepository.deleteAllByDate(date);
-    }
-
     private Vote getFromTo(VoteTo voteTo) {
         Vote vote = new Vote();
         vote.setDate(voteTo.getDateTime().toLocalDate());

@@ -43,7 +43,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        Restaurant created = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        Restaurant created = jsonConverter.readValueFromJson(result, Restaurant.class);
         long id = created.id();
         newRestaurant.setId(id);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);

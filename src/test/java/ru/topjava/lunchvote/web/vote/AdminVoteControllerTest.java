@@ -1,63 +1,70 @@
-package ru.topjava.lunchvote.web.dish;
+package ru.topjava.lunchvote.web.vote;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.topjava.lunchvote.model.Dish;
-import ru.topjava.lunchvote.testdata.UserTestData;
+import ru.topjava.lunchvote.to.VoteTo;
 import ru.topjava.lunchvote.util.JsonConverter;
 import ru.topjava.lunchvote.web.AbstractControllerTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.topjava.lunchvote.testdata.DishTestData.DISH_MATCHER;
-import static ru.topjava.lunchvote.testdata.DishTestData.getCreated;
-import static ru.topjava.lunchvote.testdata.RestaurantTestData.START_SEQ_REST;
+import static ru.topjava.lunchvote.testdata.UserTestData.admin;
 import static ru.topjava.lunchvote.testdata.UserTestData.user1;
+import static ru.topjava.lunchvote.testdata.VoteTestData.*;
+import static ru.topjava.lunchvote.web.vote.AdminVoteController.REST_URL;
 
-class DishControllerTest extends AbstractControllerTest {
+class AdminVoteControllerTest extends AbstractControllerTest {
 
-    private final static String REST_URL = "/rest/restaurants/" + START_SEQ_REST + "/dishes/";
     @Autowired
     private JsonConverter jsonConverter;
 
     @Test
     void getAll() throws Exception {
-        List<Dish> expectedMenu = populateMenu(START_SEQ_REST, 5);
-
+        List<VoteTo> expected = new ArrayList<>();
+        expected.addAll(FIRST_DAY_VOTE);
+        expected.addAll(SECOND_DAY_VOTE);
         MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL)
-                .with(userHttpBasic(user1)))
+                .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<Dish> actualMenu = jsonConverter.readValuesFromJson(result, Dish.class);
-        DISH_MATCHER.assertMatch(actualMenu, expectedMenu);
+        List<VoteTo> actual = jsonConverter.readValuesFromJson(result, VoteTo.class);
+        VOTE_TO_MATCHER.assertMatch(actual, expected);
     }
 
     @Test
-    void get() throws Exception {
-        Dish created = dishService.create(START_SEQ_REST, getCreated());
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + created.id())
-                .with(userHttpBasic(user1)))
+    void getAllByDate() throws Exception {
+        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/byDate")
+                .with(userHttpBasic(admin))
+                .param("date", "2021-03-15"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        Dish actual = jsonConverter.readValueFromJson(result, Dish.class);
-        DISH_MATCHER.assertMatch(actual, created);
+        List<VoteTo> actual = jsonConverter.readValuesFromJson(result, VoteTo.class);
+        VOTE_TO_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
     }
 
     @Test
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(user1)))
+                .andExpect(status().isForbidden());
     }
 }

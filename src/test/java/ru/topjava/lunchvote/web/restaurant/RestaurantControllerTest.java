@@ -42,7 +42,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<Restaurant> actual = jsonConverter.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        List<Restaurant> actual = jsonConverter.readValuesFromJson(result, Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, restaurants);
     }
 
@@ -55,7 +55,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        Restaurant actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        Restaurant actual = jsonConverter.readValueFromJson(result, Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, rest1);
     }
 
@@ -72,7 +72,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<Restaurant> actual = jsonConverter.readValuesFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        List<Restaurant> actual = jsonConverter.readValuesFromJson(result, Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, restaurants);
         for (Restaurant restaurant : actual) {
             List<Dish> currentMenu = expectedMenu.get(restaurant.id());
@@ -90,7 +90,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        Restaurant actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Restaurant.class);
+        Restaurant actual = jsonConverter.readValueFromJson(result, Restaurant.class);
         RESTAURANT_MATCHER.assertMatch(actual, rest1);
         DISH_MATCHER.assertMatch(actual.getMenu(), expectedMenu);
     }

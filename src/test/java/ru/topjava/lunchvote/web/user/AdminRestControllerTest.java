@@ -43,7 +43,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        List<User> actual = jsonConverter.readValuesFromJson(result.getResponse().getContentAsString(), User.class);
+        List<User> actual = jsonConverter.readValuesFromJson(result, User.class);
         USER_MATCHER.assertMatch(actual, users);
     }
 
@@ -56,7 +56,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        User actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), User.class);
+        User actual = jsonConverter.readValueFromJson(result, User.class);
         USER_MATCHER.assertMatch(actual, user1);
     }
 
@@ -69,7 +69,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        User actual = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), User.class);
+        User actual = jsonConverter.readValueFromJson(result, User.class);
         USER_MATCHER.assertMatch(actual, user2);
     }
 
@@ -84,7 +84,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        User created = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), User.class);
+        User created = jsonConverter.readValueFromJson(result, User.class);
         long newId = created.id();
         newUser.setId(newId);
         USER_MATCHER.assertMatch(created, newUser);

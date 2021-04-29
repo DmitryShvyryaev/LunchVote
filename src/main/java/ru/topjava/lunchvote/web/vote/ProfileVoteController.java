@@ -15,6 +15,7 @@ import ru.topjava.lunchvote.web.security.AuthorizedUser;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -48,7 +49,7 @@ public class ProfileVoteController {
     public ResponseEntity<VoteTo> create(@RequestBody Long restaurantId,
                                          @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         log.info("Vote for restaurant with id {} by user {}", restaurantId, authorizedUser.getUsername());
-        VoteTo voteTo = new VoteTo(LocalDateTime.now(), restaurantId, authorizedUser.getId());
+        VoteTo voteTo = new VoteTo(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), restaurantId, authorizedUser.getId());
         VoteTo created = voteService.create(voteTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();

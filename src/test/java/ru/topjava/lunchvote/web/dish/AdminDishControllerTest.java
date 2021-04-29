@@ -36,7 +36,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        Dish created = jsonConverter.readValueFromJson(result.getResponse().getContentAsString(), Dish.class);
+        Dish created = jsonConverter.readValueFromJson(result, Dish.class);
         long newId = created.id();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);

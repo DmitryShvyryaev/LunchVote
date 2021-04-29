@@ -85,10 +85,4 @@ class VoteServiceImplTest extends AbstractServiceTest {
         List<VoteTo> actual = voteService.getAllByDate(FIRST_DAY);
         VOTE_TO_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
     }
-
-    @Test
-    void deleteByDate() {
-        voteService.deleteByDate(FIRST_DAY);
-        VOTE_TO_MATCHER.assertMatch(voteService.getAllByDate(FIRST_DAY), Collections.emptyList());
-    }
 }

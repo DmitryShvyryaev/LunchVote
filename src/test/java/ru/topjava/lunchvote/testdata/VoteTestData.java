@@ -41,4 +41,5 @@ public class VoteTestData {
     public static VoteTo getCreatedVote(LocalTime time) {
         return new VoteTo(THIRD_DAY.atTime(time), rest1.id(), admin.id());
     }
+
 }

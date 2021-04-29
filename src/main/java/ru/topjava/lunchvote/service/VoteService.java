@@ -17,6 +17,4 @@ public interface VoteService {
     List<VoteTo> getAll();
 
     List<VoteTo> getAllByDate(LocalDate date);
-
-    void deleteByDate(LocalDate date);
 }

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,8 @@ public class JsonConverter {
     @Autowired
     private ObjectMapper mapper;
 
-    public <T> T readValueFromJson(String json, Class<T> clazz) {
+    public <T> T readValueFromJson(MvcResult result, Class<T> clazz) throws UnsupportedEncodingException {
+        String json = result.getResponse().getContentAsString();
         try {
             return mapper.readValue(json, clazz);
         } catch (IOException e) {
@@ -23,7 +26,8 @@ public class JsonConverter {
         }
     }
 
-    public <T> List<T> readValuesFromJson(String json, Class<T> clazz) {
+    public <T> List<T> readValuesFromJson(MvcResult result, Class<T> clazz) throws UnsupportedEncodingException {
+        String json = result.getResponse().getContentAsString();
         ObjectReader reader = mapper.readerFor(clazz);
         try {
             return reader.<T>readValues(json).readAll();
