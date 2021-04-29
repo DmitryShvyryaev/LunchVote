@@ -39,6 +39,6 @@ public class VoteTestData {
             secondDayVoteUser1, secondDayVoteUser2, secondDayVoteUser3, secondDayVoteUser4);
 
     public static VoteTo getCreatedVote(LocalTime time) {
-        return new VoteTo(null, THIRD_DAY.atTime(time), rest1.id(), admin.id());
+        return new VoteTo(THIRD_DAY.atTime(time), rest1.id(), admin.id());
     }
 }

@@ -21,8 +21,15 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     @Query("DELETE FROM Vote v WHERE v.date=:date AND v.user.id=:userId")
     int delete(@Param("date") LocalDate date, @Param("userId") long userId);
 
+    @Transactional
+    void deleteAllByDate(LocalDate date);
+
     @EntityGraph(attributePaths = {"restaurant", "user"})
     List<Vote> findAllByUserId(Long userId);
+
+    @Modifying
+    @EntityGraph(attributePaths = {"restaurant", "user"})
+    List<Vote> findAll();
 
     @EntityGraph(attributePaths = {"restaurant", "user"})
     List<Vote> findAllByDate(@Param("date") LocalDate date);

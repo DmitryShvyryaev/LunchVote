@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface VoteService {
-    VoteTo create(VoteTo voteTo, long userId);
+    VoteTo create(VoteTo voteTo);
 
     void delete(LocalDate date, long userId);
 
@@ -14,5 +14,9 @@ public interface VoteService {
 
     List<VoteTo> getAllByUser(long userId);
 
+    List<VoteTo> getAll();
+
     List<VoteTo> getAllByDate(LocalDate date);
+
+    void deleteByDate(LocalDate date);
 }

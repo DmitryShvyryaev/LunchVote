@@ -34,12 +34,12 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     @Transactional
-    public VoteTo create(VoteTo voteTo, long userId) {
-        int countOfVote = voteRepository.countByDateAndUserId(voteTo.getDateTime().toLocalDate(), userId);
+    public VoteTo create(VoteTo voteTo) {
+        int countOfVote = voteRepository.countByDateAndUserId(voteTo.getDateTime().toLocalDate(), voteTo.getUserId());
         if (countOfVote != 0 && voteTo.getDateTime().toLocalTime().isAfter(limit)) {
-            throw new RepeatVoteException("User with id " + userId + " has already vote on this date " + voteTo.getDateTime().toLocalDate());
+            throw new RepeatVoteException("User with id " + voteTo.getUserId() + " has already vote on this date " + voteTo.getDateTime().toLocalDate());
         } else if (countOfVote != 0)
-            delete(voteTo.getDateTime().toLocalDate(), userId);
+            delete(voteTo.getDateTime().toLocalDate(), voteTo.getUserId());
         Vote createdVote = voteRepository.save(getFromTo(voteTo));
         return getToFromVote(createdVote);
     }
@@ -62,8 +62,20 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
+    public List<VoteTo> getAll() {
+        List<Vote> votes = voteRepository.findAll();
+        return getTosFromVotes(votes);
+    }
+
+    @Override
     public List<VoteTo> getAllByDate(LocalDate date) {
         return getTosFromVotes(voteRepository.findAllByDate(date));
+    }
+
+    @Override
+    @Transactional
+    public void deleteByDate(LocalDate date) {
+        voteRepository.deleteAllByDate(date);
     }
 
     private Vote getFromTo(VoteTo voteTo) {

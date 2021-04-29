@@ -9,6 +9,8 @@ import ru.topjava.lunchvote.service.VoteService;
 import ru.topjava.lunchvote.to.VoteTo;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +39,7 @@ class VoteServiceImplTest extends AbstractServiceTest {
     @Test
     void create() {
         VoteTo newVote = new VoteTo(getCreatedVote(LocalTime.of(9, 0)));
-        VoteTo created = voteService.create(newVote, newVote.getUserId());
+        VoteTo created = voteService.create(newVote);
         newVote.setId(created.id());
         VOTE_TO_MATCHER.assertMatch(created, newVote);
         VOTE_TO_MATCHER.assertMatch(voteService.get(newVote.getDateTime().toLocalDate(), newVote.getUserId()), newVote);
@@ -46,7 +48,7 @@ class VoteServiceImplTest extends AbstractServiceTest {
     @Test
     void createRepeat() {
         VoteTo newVote = new VoteTo(null, FIRST_DAY.atTime(10, 0), rest3.id(), admin.id());
-        VoteTo created = voteService.create(newVote, newVote.getUserId());
+        VoteTo created = voteService.create(newVote);
         newVote.setId(created.id());
         VOTE_TO_MATCHER.assertMatch(created, newVote);
         VOTE_TO_MATCHER.assertMatch(voteService.get(FIRST_DAY, admin.id()), newVote);
@@ -55,7 +57,7 @@ class VoteServiceImplTest extends AbstractServiceTest {
     @Test
     void createRepeatAfterLimit() {
         VoteTo newVote = new VoteTo(null, FIRST_DAY.atTime(11, 0, 1), rest3.id(), admin.id());
-        assertThrows(RepeatVoteException.class, () -> voteService.create(newVote, newVote.getUserId()));
+        assertThrows(RepeatVoteException.class, () -> voteService.create(newVote));
     }
 
     @Test
@@ -71,8 +73,22 @@ class VoteServiceImplTest extends AbstractServiceTest {
     }
 
     @Test
+    void getAll() {
+        List<VoteTo> expected = new ArrayList<>();
+        expected.addAll(FIRST_DAY_VOTE);
+        expected.addAll(SECOND_DAY_VOTE);
+        VOTE_TO_MATCHER.assertMatch(voteService.getAll(), expected);
+    }
+
+    @Test
     void getAllByDate() {
         List<VoteTo> actual = voteService.getAllByDate(FIRST_DAY);
         VOTE_TO_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
+    }
+
+    @Test
+    void deleteByDate() {
+        voteService.deleteByDate(FIRST_DAY);
+        VOTE_TO_MATCHER.assertMatch(voteService.getAllByDate(FIRST_DAY), Collections.emptyList());
     }
 }
