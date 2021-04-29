@@ -11,11 +11,12 @@ import ru.topjava.lunchvote.to.VoteTo;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static ru.topjava.lunchvote.testdata.DateTestData.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ru.topjava.lunchvote.testdata.DateTestData.FIRST_DAY;
+import static ru.topjava.lunchvote.testdata.DateTestData.THIRD_DAY;
+import static ru.topjava.lunchvote.testdata.RestaurantTestData.rest3;
+import static ru.topjava.lunchvote.testdata.UserTestData.admin;
 import static ru.topjava.lunchvote.testdata.VoteTestData.*;
-import static ru.topjava.lunchvote.testdata.UserTestData.*;
-import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 
 class VoteServiceImplTest extends AbstractServiceTest {
 
@@ -71,9 +72,7 @@ class VoteServiceImplTest extends AbstractServiceTest {
 
     @Test
     void getAllByDate() {
-    }
-
-    @Test
-    void clear() {
+        List<VoteTo> actual = voteService.getAllByDate(FIRST_DAY);
+        VOTE_TO_MATCHER.assertMatch(actual, FIRST_DAY_VOTE);
     }
 }
