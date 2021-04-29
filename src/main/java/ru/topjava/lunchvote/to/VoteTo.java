@@ -20,6 +20,10 @@ public class VoteTo extends BaseTo {
         this.userId = userId;
     }
 
+    public VoteTo(VoteTo voteTo) {
+        this(voteTo.id, voteTo.dateTime, voteTo.restaurantId, voteTo.userId);
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }

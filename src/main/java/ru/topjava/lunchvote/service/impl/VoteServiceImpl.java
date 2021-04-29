@@ -1,6 +1,5 @@
 package ru.topjava.lunchvote.service.impl;
 
-import org.hibernate.mapping.Collection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.topjava.lunchvote.exception.NotFoundException;
@@ -13,12 +12,11 @@ import ru.topjava.lunchvote.service.VoteService;
 import ru.topjava.lunchvote.to.VoteTo;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.topjava.lunchvote.util.ValidationUtil.*;
+import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class VoteServiceImpl implements VoteService {
@@ -37,11 +35,11 @@ public class VoteServiceImpl implements VoteService {
     @Override
     @Transactional
     public VoteTo create(VoteTo voteTo, long userId) {
-        Vote existingVote = voteRepository.findByDateAndUserId(voteTo.getDateTime().toLocalDate(), userId).orElse(null);
-        if (existingVote != null && voteTo.getDateTime().toLocalTime().isAfter(limit)) {
+        int countOfVote = voteRepository.countByDateAndUserId(voteTo.getDateTime().toLocalDate(), userId);
+        if (countOfVote != 0 && voteTo.getDateTime().toLocalTime().isAfter(limit)) {
             throw new RepeatVoteException("User with id " + userId + " has already vote on this date " + voteTo.getDateTime().toLocalDate());
         }
-        Vote createdVote =  voteRepository.save(getFromTo(voteTo));
+        Vote createdVote = voteRepository.save(getFromTo(voteTo));
         return getToFromVote(createdVote);
     }
 
