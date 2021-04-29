@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "user_id"}, name = "votes_unique_user_date_idx")})
@@ -14,6 +15,10 @@ public class Vote extends AbstractEntity {
     @Column(name = "date", nullable = false)
     @NotNull
     private LocalDate date;
+
+    @Column(name = "time", nullable = false)
+    @NotNull
+    private LocalTime time;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -30,15 +35,17 @@ public class Vote extends AbstractEntity {
     public Vote() {
     }
 
-    public Vote(LocalDate date, Restaurant restaurant, User user) {
+    public Vote(LocalDate date, LocalTime time, Restaurant restaurant, User user) {
         this.date = date;
+        this.time = time;
         this.restaurant = restaurant;
         this.user = user;
     }
 
-    public Vote(Long id, LocalDate date, Restaurant restaurant, User user) {
+    public Vote(Long id, LocalDate date, LocalTime time, Restaurant restaurant, User user) {
         super(id);
         this.date = date;
+        this.time = time;
         this.restaurant = restaurant;
         this.user = user;
     }
@@ -49,6 +56,14 @@ public class Vote extends AbstractEntity {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public Restaurant getRestaurant() {
@@ -72,6 +87,7 @@ public class Vote extends AbstractEntity {
         return "Vote{" +
                 "id=" + id +
                 ", date=" + date +
+                ", time=" + time +
                 ", restaurant=" + restaurant +
                 ", user=" + user +
                 '}';

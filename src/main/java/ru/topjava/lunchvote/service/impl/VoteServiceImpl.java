@@ -38,15 +38,16 @@ public class VoteServiceImpl implements VoteService {
         int countOfVote = voteRepository.countByDateAndUserId(voteTo.getDateTime().toLocalDate(), userId);
         if (countOfVote != 0 && voteTo.getDateTime().toLocalTime().isAfter(limit)) {
             throw new RepeatVoteException("User with id " + userId + " has already vote on this date " + voteTo.getDateTime().toLocalDate());
-        }
+        } else if (countOfVote != 0)
+            delete(voteTo.getDateTime().toLocalDate(), userId);
         Vote createdVote = voteRepository.save(getFromTo(voteTo));
         return getToFromVote(createdVote);
     }
 
     @Override
     @Transactional
-    public void delete(long id, long userId) {
-        checkNotFoundWithId(voteRepository.delete(id, userId) != 0, id);
+    public void delete(LocalDate date, long userId) {
+        voteRepository.delete(date, userId);
     }
 
     @Override
@@ -74,6 +75,7 @@ public class VoteServiceImpl implements VoteService {
     private Vote getFromTo(VoteTo voteTo) {
         Vote vote = new Vote();
         vote.setDate(voteTo.getDateTime().toLocalDate());
+        vote.setTime(voteTo.getDateTime().toLocalTime());
         vote.setRestaurant(restaurantRepository.getOne(voteTo.getRestaurantId()));
         vote.setUser(userRepository.getOne(voteTo.getUserId()));
         return vote;
@@ -82,7 +84,7 @@ public class VoteServiceImpl implements VoteService {
     private VoteTo getToFromVote(Vote vote) {
         VoteTo voteTo = new VoteTo();
         voteTo.setId(vote.id());
-        voteTo.setDateTime(vote.getDate().atStartOfDay());
+        voteTo.setDateTime(vote.getDate().atTime(vote.getTime()));
         voteTo.setRestaurantId(vote.getRestaurant().id());
         voteTo.setUserId(vote.getUser().id());
         return voteTo;

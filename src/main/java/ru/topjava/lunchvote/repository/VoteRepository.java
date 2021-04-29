@@ -18,8 +18,8 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Vote v WHERE v.id=:id AND v.user.id=:userId")
-    int delete(@Param("id") long id, @Param("userId") long userId);
+    @Query("DELETE FROM Vote v WHERE v.date=:date AND v.user.id=:userId")
+    int delete(@Param("date") LocalDate date, @Param("userId") long userId);
 
     @Transactional
     @Query("DELETE FROM Vote v WHERE v.date>=:startDate AND v.date<:endDate")
