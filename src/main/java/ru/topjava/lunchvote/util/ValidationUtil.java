@@ -1,5 +1,7 @@
 package ru.topjava.lunchvote.util;
 
+import org.springframework.core.NestedExceptionUtils;
+import org.springframework.lang.NonNull;
 import ru.topjava.lunchvote.HasId;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.AbstractEntity;
@@ -40,5 +42,15 @@ public class ValidationUtil {
         } else if (entity.id() != id) {
             throw new IllegalArgumentException(entity + " must be with id=" + id);
         }
+    }
+
+    @NonNull
+    public static Throwable getRootCause(@NonNull Throwable t) {
+        Throwable rootCause = NestedExceptionUtils.getRootCause(t);
+        return rootCause != null ? rootCause : t;
+    }
+
+    public static String getMessage(Throwable e) {
+        return e.getLocalizedMessage() != null ? e.getLocalizedMessage() : e.getClass().getName();
     }
 }

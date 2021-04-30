@@ -21,4 +21,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @EntityGraph(attributePaths = {"menu"})
     @Query("SELECT DISTINCT r FROM Restaurant r LEFT OUTER JOIN r.menu m ON m.date=:date WHERE r.id=:id")
     Optional<Restaurant> findWithMenu(@Param("id") long id, @Param("date") LocalDate date);
+
+    Optional<Restaurant> findByName(String name);
 }
