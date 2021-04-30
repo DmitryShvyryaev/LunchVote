@@ -14,7 +14,8 @@ public class RestaurantTestData {
     private RestaurantTestData() {
     }
 
-    public static final Matcher<Restaurant> RESTAURANT_MATCHER = Matcher.getComparator("menu");
+    public static final Matcher<Restaurant> RESTAURANT_MATCHER = Matcher.getComparator(Restaurant.class, "menu");
+    public static final Matcher<Restaurant> RESTAURANT_MENU_MATCHER = Matcher.getComparator(Restaurant.class, "menu.restaurant");
 
     public static final long START_SEQ_REST = 100005L;
 

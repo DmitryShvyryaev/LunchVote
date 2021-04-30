@@ -1,6 +1,7 @@
 package ru.topjava.lunchvote.testdata;
 
 import ru.topjava.lunchvote.model.Dish;
+import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.util.Matcher;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class DishTestData {
 
     public static final long START_SEQ_DISH = 100008L;
 
-    public static final Matcher<Dish> DISH_MATCHER = Matcher.getComparator("restaurant");
+    public static final Matcher<Dish> DISH_MATCHER = Matcher.getComparator(Dish.class, "restaurant");
 
     public static final Dish tanukiFirstDayDish1 = new Dish(START_SEQ_DISH, "Мисо-суп", 21050L, FIRST_DAY);
     public static final Dish tanukiFirstDayDish2 = new Dish(START_SEQ_DISH + 1, "Калифорния", 42035L, FIRST_DAY);

@@ -53,15 +53,12 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/all")
+        perform(MockMvcRequestBuilders.get(REST_URL + "/all")
                 .with(userHttpBasic(user1)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        List<VoteTo> actual = jsonConverter.readValuesFromJson(result, VoteTo.class);
-        VOTE_TO_MATCHER.assertMatch(actual, List.of(firstDayVoteUser1, secondDayVoteUser1));
+                .andExpect(VOTE_TO_MATCHER.checkJson(List.of(firstDayVoteUser1, secondDayVoteUser1)));
     }
 
     @Test

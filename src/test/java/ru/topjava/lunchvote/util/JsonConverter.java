@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -13,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonConverter {
+
+    private static final JsonConverter CONVERTER = new JsonConverter();
+    private JsonConverter() {
+    }
 
     @Autowired
     private ObjectMapper mapper;
@@ -49,5 +54,9 @@ public class JsonConverter {
         });
         map.putAll(Map.of(addName, addValue));
         return writeValue(map);
+    }
+
+    public static JsonConverter getConverter() {
+        return CONVERTER;
     }
 }

@@ -13,7 +13,7 @@ public class UserTestData {
     private UserTestData() {
     }
 
-    public static final Matcher<User> USER_MATCHER = Matcher.getComparator("registered", "password");
+    public static final Matcher<User> USER_MATCHER = Matcher.getComparator(User.class, "registered", "password");
 
     public static final long USER_ID = 100000L;
 

@@ -50,8 +50,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(updated)))
-                .andExpect(status().isNoContent())
-                .andReturn();
+                .andExpect(status().isNoContent());
 
         Dish actual = dishService.get(updated.id(), START_SEQ_REST);
         DISH_MATCHER.assertMatch(actual, updated);

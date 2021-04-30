@@ -13,8 +13,6 @@ import ru.topjava.lunchvote.service.UserService;
 import ru.topjava.lunchvote.util.JsonConverter;
 import ru.topjava.lunchvote.web.AbstractControllerTest;
 
-import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,41 +34,32 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL)
+        perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        List<User> actual = jsonConverter.readValuesFromJson(result, User.class);
-        USER_MATCHER.assertMatch(actual, users);
+                .andExpect(USER_MATCHER.checkJson(users));
     }
 
     @Test
     void get() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/" + (USER_ID + 1))
+        perform(MockMvcRequestBuilders.get(REST_URL + "/" + (USER_ID + 1))
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        User actual = jsonConverter.readValueFromJson(result, User.class);
-        USER_MATCHER.assertMatch(actual, user1);
+                .andExpect(USER_MATCHER.checkJson(user1));
     }
 
     @Test
     void getByEmail() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL + "/by?email=" + user2.getEmail())
+        perform(MockMvcRequestBuilders.get(REST_URL + "/by?email=" + user2.getEmail())
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        User actual = jsonConverter.readValueFromJson(result, User.class);
-        USER_MATCHER.assertMatch(actual, user2);
+                .andExpect(USER_MATCHER.checkJson(user2));
     }
 
     @Test

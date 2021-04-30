@@ -93,14 +93,14 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
     @Test
     void getWithMenu() {
         Restaurant actual = restaurantService.getWithMenu(START_SEQ_REST, FIRST_DAY);
-        Matcher.getComparator("menu").assertMatch(actual, rest1);
+        RESTAURANT_MATCHER.assertMatch(actual, rest1);
         DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), DishTestData.tanukiFirstDay);
     }
 
     @Test
     void getWithMenuEmpty() {
         Restaurant actual = restaurantService.getWithMenu(START_SEQ_REST + 2, FIRST_DAY);
-        Matcher.getComparator("menu").assertMatch(actual, rest3);
+        RESTAURANT_MATCHER.assertMatch(actual, rest3);
         DishTestData.DISH_MATCHER.assertMatch(actual.getMenu(), Collections.emptyList());
     }
 

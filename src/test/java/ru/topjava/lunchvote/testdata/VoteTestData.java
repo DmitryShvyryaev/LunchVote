@@ -16,7 +16,7 @@ public class VoteTestData {
     private VoteTestData() {
     }
 
-    public static final Matcher<VoteTo> VOTE_TO_MATCHER = Matcher.getComparator();
+    public static final Matcher<VoteTo> VOTE_TO_MATCHER = Matcher.getComparator(VoteTo.class);
 
     public static final long START_VOTE_ID = 100016L;
 
@@ -37,6 +37,10 @@ public class VoteTestData {
 
     public static final List<VoteTo> SECOND_DAY_VOTE = List.of(secondDayVoteAdmin,
             secondDayVoteUser1, secondDayVoteUser2, secondDayVoteUser3, secondDayVoteUser4);
+
+    public static final List<VoteTo> ALL_VOTES = List.of(
+            firstDayVoteAdmin, firstDayVoteUser1, firstDayVoteUser2, firstDayVoteUser3, firstDayVoteUser4,
+            secondDayVoteAdmin, secondDayVoteUser1, secondDayVoteUser2, secondDayVoteUser3, secondDayVoteUser4);
 
     public static VoteTo getCreatedVote(LocalTime time) {
         return new VoteTo(THIRD_DAY.atTime(time), rest1.id(), admin.id());

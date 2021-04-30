@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.RestaurantService;
@@ -60,8 +59,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .content(jsonConverter.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        Restaurant actual = restaurantService.get(updated.id());
-        RESTAURANT_MATCHER.assertMatch(actual, updated);
+        RESTAURANT_MATCHER.assertMatch(restaurantService.get(updated.id()), updated);
     }
 
     @Test
@@ -100,11 +98,11 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     void createDuplicateName() throws Exception {
         Restaurant newRestaurant = new Restaurant("Тануки", "55555555555555555555555");
-            MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
-                    .with(userHttpBasic(admin))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonConverter.writeValue(newRestaurant)))
-                    .andReturn();
+        MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newRestaurant)))
+                .andReturn();
         System.out.println(result.getResponse().getContentAsString());
     }
 }

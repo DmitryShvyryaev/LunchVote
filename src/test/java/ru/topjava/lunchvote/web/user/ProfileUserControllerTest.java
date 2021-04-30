@@ -36,15 +36,12 @@ class ProfileUserControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        MvcResult result = perform(MockMvcRequestBuilders.get(REST_URL)
+        perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(user2)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn();
-
-        User actual = jsonConverter.readValueFromJson(result, User.class);
-        USER_MATCHER.assertMatch(actual, user2);
+                .andExpect(USER_MATCHER.checkJson(user2));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package ru.topjava.lunchvote.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,11 @@ public class Restaurant extends AbstractNamedEntity {
 
     public Restaurant(Restaurant restaurant) {
         this(restaurant.getId(), restaurant.getName(), restaurant.getDescription());
+    }
+
+    public Restaurant(Restaurant restaurant, List<Dish> menu) {
+        this(restaurant);
+        setMenu(menu);
     }
 
     public String getDescription() {
