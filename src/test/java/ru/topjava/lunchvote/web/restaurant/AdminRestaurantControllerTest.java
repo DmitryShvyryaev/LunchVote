@@ -15,6 +15,7 @@ import ru.topjava.lunchvote.web.AbstractControllerTest;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.*;
 import static ru.topjava.lunchvote.testdata.UserTestData.admin;
 import static ru.topjava.lunchvote.testdata.UserTestData.user1;
@@ -91,18 +92,48 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(newRestaurant)))
+                .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
-                .andDo(print());
+                .andExpect(errorType(VALIDATION_ERROR));
     }
 
     @Test
     void createDuplicateName() throws Exception {
-        Restaurant newRestaurant = new Restaurant("Тануки", "55555555555555555555555");
-        MvcResult result = perform(MockMvcRequestBuilders.post(REST_URL)
+        Restaurant newRestaurant = new Restaurant("Тануки", "Description");
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(newRestaurant)))
-                .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.restaurant.duplicateName"));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        Restaurant updated = new Restaurant(rest1);
+        updated.setDescription(" ");
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + updated.getId())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void updateDuplicateName() throws Exception {
+        Restaurant updated = new Restaurant(rest1);
+        updated.setName(rest2.getName());
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + updated.getId())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.restaurant.duplicateName"));
     }
 }

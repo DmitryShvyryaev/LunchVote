@@ -34,7 +34,7 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorInfo> handleError(HttpServletRequest req, MethodArgumentNotValidException e) {
         String[] details = e.getBindingResult().getFieldErrors().stream()
-                .map(fe -> "[" + fe.getField() + "] " + messageSourceAccessor.getMessage(fe))
+                .map(messageSourceAccessor::getMessage)
                 .toArray(String[]::new);
         return logAndGetErrorInfo(req, e, VALIDATION_ERROR, details);
     }
