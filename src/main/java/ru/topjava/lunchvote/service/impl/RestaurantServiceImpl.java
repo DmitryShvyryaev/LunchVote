@@ -7,14 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
+import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 import ru.topjava.lunchvote.service.RestaurantService;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;
-import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
+import static ru.topjava.lunchvote.util.ValidationUtil.*;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
@@ -56,7 +56,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Transactional
     @Override
     public void delete(long id) {
-        restaurantRepository.deleteById(id);
+        checkNotFound(restaurantRepository.delete(id) != 0, "id = " + id, Restaurant.class);
     }
 
     @Cacheable(value = "restaurants")

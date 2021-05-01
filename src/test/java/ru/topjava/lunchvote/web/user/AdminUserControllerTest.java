@@ -17,6 +17,7 @@ import ru.topjava.lunchvote.web.AbstractControllerTest;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.topjava.lunchvote.exception.ErrorType.DATA_NOT_FOUND;
 import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
 import static ru.topjava.lunchvote.web.user.AdminUserController.REST_URL;
@@ -179,5 +180,14 @@ class AdminUserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
                 .andExpect(detailMessage("exception.user.duplicateEmail"));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + 15L)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(DATA_NOT_FOUND));
     }
 }
