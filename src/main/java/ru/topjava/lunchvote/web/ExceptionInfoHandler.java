@@ -7,10 +7,12 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.topjava.lunchvote.exception.ErrorInfo;
 import ru.topjava.lunchvote.exception.ErrorType;
 import ru.topjava.lunchvote.exception.NotFoundException;
@@ -62,6 +64,11 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorInfo> handleError(HttpServletRequest req, NotFoundException e) {
         return logAndGetErrorInfo(req, e, DATA_NOT_FOUND);
+    }
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorInfo> illegalRequestDataError(HttpServletRequest req, Exception e) {
+        return logAndGetErrorInfo(req, e, VALIDATION_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
