@@ -4,6 +4,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.repository.DishRepository;
@@ -28,14 +29,14 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<Dish> getAll(LocalDate date, long restaurantId) {
-        Restaurant owner = restaurantRepository.getOne(restaurantId);
+        Restaurant owner = handleNotFound(restaurantId);
         return repository.findAllByDateAndRestaurant(date, owner);
     }
 
     @Override
     public Dish get(long id, long restaurantId) {
-        Restaurant owner = restaurantRepository.getOne(restaurantId);
-        return checkNotFoundWithId(repository.findByIdAndRestaurant(id, owner).orElse(null), id);
+        Restaurant owner = handleNotFound(restaurantId);
+        return checkNotFoundWithId(repository.findByIdAndRestaurant(id, owner).orElse(null), id, Dish.class);
     }
 
     @Transactional
@@ -43,7 +44,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public Dish create(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
-        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
+        dish.setRestaurant(handleNotFound(restaurantId));
         return repository.save(dish);
     }
 
@@ -53,7 +54,8 @@ public class DishServiceImpl implements DishService {
     public Dish update(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
         get(dish.id(), restaurantId);
-        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
+        dish.setRestaurant(handleNotFound(restaurantId
+        ));
         return repository.save(dish);
     }
 
@@ -61,6 +63,13 @@ public class DishServiceImpl implements DishService {
     @CacheEvict(value = "restaurants", allEntries = true)
     @Override
     public void delete(long restaurantId, long id) {
-        checkNotFoundWithId(repository.delete(id, restaurantId) != 0, id);
+        checkNotFoundWithId(repository.delete(id, restaurantId) != 0, id, Dish.class);
+    }
+
+    private Restaurant handleNotFound(long restaurantId) {
+        if (restaurantRepository.existsById(restaurantId))
+            return restaurantRepository.getOne(restaurantId);
+        else
+            throw new NotFoundException("Not found restaurant with id " + restaurantId);
     }
 }

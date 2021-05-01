@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.service.DishService;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 

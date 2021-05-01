@@ -96,4 +96,13 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void voteNotExist() throws Exception {
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(user2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(rest2.id() + 79)))
+                .andDo(print());
+    }
 }

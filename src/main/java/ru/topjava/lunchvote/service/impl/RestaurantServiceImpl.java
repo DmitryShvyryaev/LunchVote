@@ -49,7 +49,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public Restaurant update(Restaurant restaurant) {
         Assert.notNull(restaurant, "Restaurant must not bu null");
-        return checkNotFoundWithId(restaurantRepository.save(restaurant), restaurant.id());
+        return checkNotFoundWithId(restaurantRepository.save(restaurant), restaurant.id(), Restaurant.class);
     }
 
     @CacheEvict(value = "restaurants", allEntries = true)

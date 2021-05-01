@@ -10,23 +10,23 @@ public class ValidationUtil {
     private ValidationUtil() {
     }
 
-    public static <T> T checkNotFoundWithId(T object, long id) {
-        checkNotFoundWithId(object != null, id);
+    public static <T> T checkNotFoundWithId(T object, long id, Class clazz) {
+        checkNotFoundWithId(object != null, id, clazz);
         return object;
     }
 
-    public static void checkNotFoundWithId(boolean found, long id) {
-        checkNotFound(found, "id=" + id);
+    public static void checkNotFoundWithId(boolean found, long id, Class clazz) {
+        checkNotFound(found, "id=" + id, clazz);
     }
 
-    public static <T> T checkNotFound(T object, String msg) {
-        checkNotFound(object != null, msg);
+    public static <T> T checkNotFound(T object, String msg, Class clazz) {
+        checkNotFound(object != null, msg, clazz);
         return object;
     }
 
-    public static void checkNotFound(boolean found, String msg) {
+    public static void checkNotFound(boolean found, String msg, Class clazz) {
         if (!found) {
-            throw new NotFoundException("Not found entity with " + msg);
+            throw new NotFoundException("Not found entity [" + clazz.getSimpleName() + "] with " + msg);
         }
     }
 

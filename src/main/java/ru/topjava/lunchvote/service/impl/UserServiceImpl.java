@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(long id) {
-        return checkNotFoundWithId(repository.findById(id).orElse(null), id);
+        return checkNotFoundWithId(repository.findById(id).orElse(null), id, User.class);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
-        return checkNotFoundWithId(prepareAndSave(user), user.id());
+        return checkNotFoundWithId(prepareAndSave(user), user.id(), User.class);
     }
 
     @Transactional
@@ -79,14 +79,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(UserTo userTo) {
         User user = get(userTo.getId());
-        return prepareAndSave(updateFromTo(user, userTo));
+        return checkNotFoundWithId(prepareAndSave(updateFromTo(user, userTo)), userTo.id(), User.class);
     }
 
     @Transactional
     @CacheEvict(value = "users", allEntries = true)
     @Override
     public void delete(long id) {
-        repository.deleteById(id);
+        checkNotFound(repository.delete(id) != 0, "id = " + id, User.class);
     }
 
     @Transactional

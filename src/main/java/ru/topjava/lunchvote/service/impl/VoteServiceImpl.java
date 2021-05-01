@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.exception.RepeatVoteException;
+import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.model.Vote;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 import ru.topjava.lunchvote.repository.UserRepository;
@@ -76,7 +77,7 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = new Vote();
         vote.setDate(voteTo.getDateTime().toLocalDate());
         vote.setTime(voteTo.getDateTime().toLocalTime());
-        vote.setRestaurant(restaurantRepository.getOne(voteTo.getRestaurantId()));
+        vote.setRestaurant(handleNotFound(voteTo.id()));
         vote.setUser(userRepository.getOne(voteTo.getUserId()));
         return vote;
     }
@@ -92,5 +93,12 @@ public class VoteServiceImpl implements VoteService {
 
     private List<VoteTo> getTosFromVotes(List<Vote> votes) {
         return votes.stream().map(this::getToFromVote).collect(Collectors.toList());
+    }
+
+    private Restaurant handleNotFound(long restaurantId) {
+        if (restaurantRepository.existsById(restaurantId))
+            return restaurantRepository.getOne(restaurantId);
+        else
+            throw new NotFoundException("Not found restaurant with id " + restaurantId);
     }
 }
