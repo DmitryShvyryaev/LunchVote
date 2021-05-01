@@ -19,6 +19,8 @@ import static ru.topjava.lunchvote.testdata.DishTestData.*;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.START_SEQ_REST;
 import static ru.topjava.lunchvote.testdata.UserTestData.admin;
 import static ru.topjava.lunchvote.testdata.UserTestData.user1;
+import static ru.topjava.lunchvote.testdata.DateTestData.*;
+import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 
 class AdminDishControllerTest extends AbstractControllerTest {
 
@@ -78,5 +80,54 @@ class AdminDishControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(user1)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        Dish newDish = new Dish(" ", 2L, null);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newDish)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void createDuplicateName() throws Exception {
+        Dish newDish = new Dish("Калифорния", 200002L, FIRST_DAY);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newDish)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        Dish updated = new Dish(tanukiFirstDayDish1.id(), " ", 5L, null);
+        perform(MockMvcRequestBuilders.put(REST_URL + updated.id())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void updateDuplicateName() throws Exception {
+        Dish updated = new Dish(tanukiFirstDayDish1.id(), "Калифорния", 100001L, tanukiFirstDayDish1.getDate());
+        perform(MockMvcRequestBuilders.put(REST_URL + updated.id())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.dish.duplicateName"));
     }
 }

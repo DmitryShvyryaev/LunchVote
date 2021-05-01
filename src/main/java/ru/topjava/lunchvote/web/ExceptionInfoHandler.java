@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,8 @@ import ru.topjava.lunchvote.exception.ErrorType;
 import ru.topjava.lunchvote.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import static ru.topjava.lunchvote.exception.ErrorType.*;
 import static ru.topjava.lunchvote.util.ValidationUtil.getMessage;
@@ -27,6 +30,10 @@ public class ExceptionInfoHandler {
 
     private final MessageSourceAccessor messageSourceAccessor;
 
+    private static final Map<String, String> ENTITY_CONSTRAINS_I18 = Map.of(
+        "dishes_unique_rest_date_name_idx", "exception.dish.duplicateName"
+    );
+
     public ExceptionInfoHandler(MessageSourceAccessor messageSourceAccessor) {
         this.messageSourceAccessor = messageSourceAccessor;
     }
@@ -37,6 +44,19 @@ public class ExceptionInfoHandler {
                 .map(messageSourceAccessor::getMessage)
                 .toArray(String[]::new);
         return logAndGetErrorInfo(req, e, VALIDATION_ERROR, details);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorInfo> conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+        String rootMessage = getRootCause(e).getMessage();
+        if (rootMessage != null) {
+            String lowerCaseMsg = rootMessage.toLowerCase();
+            for (Map.Entry<String, String> entry : ENTITY_CONSTRAINS_I18.entrySet()) {
+                if (lowerCaseMsg.contains(entry.getKey()))
+                    return logAndGetErrorInfo(req, e, VALIDATION_ERROR, messageSourceAccessor.getMessage(entry.getValue()));
+            }
+        }
+        return logAndGetErrorInfo(req, e, DATA_ERROR);
     }
 
     @ExceptionHandler(NotFoundException.class)

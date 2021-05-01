@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.service.DishService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
@@ -30,7 +31,7 @@ public class AdminDishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@PathVariable long restaurantId, @RequestBody Dish dish) {
+    public ResponseEntity<Dish> createWithLocation(@PathVariable long restaurantId,@Valid @RequestBody Dish dish) {
         LocalDate today = LocalDate.now();
         log.info("Create dish {} for restaurant {}", dish, restaurantId);
         checkNew(dish);
@@ -43,7 +44,7 @@ public class AdminDishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable long restaurantId, @PathVariable long id, @RequestBody Dish dish) {
+    public void update(@PathVariable long restaurantId, @PathVariable long id, @Valid @RequestBody Dish dish) {
         log.info("Update dish {} with id {}", dish, id);
         assureIdConsistent(dish, id);
         dishService.update(restaurantId, dish);

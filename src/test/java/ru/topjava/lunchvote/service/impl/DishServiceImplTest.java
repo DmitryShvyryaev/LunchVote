@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
-import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.DishService;
 

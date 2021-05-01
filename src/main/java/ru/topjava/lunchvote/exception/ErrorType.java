@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorType {
     VALIDATION_ERROR("error.validationError", HttpStatus.UNPROCESSABLE_ENTITY),
     DATA_NOT_FOUND("error.dataNotFound", HttpStatus.UNPROCESSABLE_ENTITY),
+    DATA_ERROR("error.dataError", HttpStatus.CONFLICT),
     APP_ERROR("error.appError", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String errorCode;
