@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.topjava.lunchvote.exception.ErrorType;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.service.VoteService;
 import ru.topjava.lunchvote.to.VoteTo;
@@ -102,7 +103,10 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(user2))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonConverter.writeValue(rest2.id() + 79)))
-                .andDo(print());
+                .content(jsonConverter.writeValue(15L)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(ErrorType.DATA_NOT_FOUND))
+                .andExpect(detailMessage("exception.restaurant.notFound"));
     }
 }

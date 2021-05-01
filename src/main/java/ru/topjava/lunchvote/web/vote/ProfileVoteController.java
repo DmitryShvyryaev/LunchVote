@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.topjava.lunchvote.service.VoteService;
 import ru.topjava.lunchvote.to.VoteTo;
 import ru.topjava.lunchvote.web.security.AuthorizedUser;
+import ru.topjava.lunchvote.web.validators.RestaurantPathVariableValidator;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -27,8 +28,11 @@ public class ProfileVoteController {
     private final VoteService voteService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public ProfileVoteController(VoteService voteService) {
+    private final RestaurantPathVariableValidator pathVariableValidator;
+
+    public ProfileVoteController(VoteService voteService, RestaurantPathVariableValidator pathVariableValidator) {
         this.voteService = voteService;
+        this.pathVariableValidator = pathVariableValidator;
     }
 
     @GetMapping
@@ -49,6 +53,7 @@ public class ProfileVoteController {
     public ResponseEntity<VoteTo> create(@RequestBody Long restaurantId,
                                          @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         log.info("Vote for restaurant with id {} by user {}", restaurantId, authorizedUser.getUsername());
+        pathVariableValidator.validatePathVariable(restaurantId);
         VoteTo voteTo = new VoteTo(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), restaurantId, authorizedUser.getId());
         VoteTo created = voteService.create(voteTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
