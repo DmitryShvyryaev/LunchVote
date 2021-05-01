@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.service.DishService;
+import ru.topjava.lunchvote.web.validators.RestaurantPathVariableValidator;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,20 +23,25 @@ public class DishController {
     private final DishService dishService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public DishController(DishService dishService) {
+    private final RestaurantPathVariableValidator pathVariableValidator;
+
+    public DishController(DishService dishService, RestaurantPathVariableValidator pathVariableValidator) {
         this.dishService = dishService;
+        this.pathVariableValidator = pathVariableValidator;
     }
 
     @GetMapping
     public List<Dish> getAll(@PathVariable long restaurantId) {
         LocalDate today = LocalDate.now();
         log.info("Get all dishes for date {} for restaurant with id {}", today, restaurantId);
+        pathVariableValidator.validatePathVariable(restaurantId);
         return dishService.getAll(today, restaurantId);
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable long restaurantId, @PathVariable long id) {
         log.info("Get dish with id {} for restaurant with id {}", id, restaurantId);
+        pathVariableValidator.validatePathVariable(restaurantId);
         return dishService.get(id, restaurantId);
     }
 }

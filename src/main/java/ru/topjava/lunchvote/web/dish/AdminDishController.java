@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.service.DishService;
+import ru.topjava.lunchvote.web.validators.RestaurantPathVariableValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -26,14 +27,18 @@ public class AdminDishController {
     private final DishService dishService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public AdminDishController(DishService dishService) {
+    private final RestaurantPathVariableValidator pathVariableValidator;
+
+    public AdminDishController(DishService dishService, RestaurantPathVariableValidator pathVariableValidator) {
         this.dishService = dishService;
+        this.pathVariableValidator = pathVariableValidator;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Dish> createWithLocation(@PathVariable long restaurantId,@Valid @RequestBody Dish dish) {
         LocalDate today = LocalDate.now();
         log.info("Create dish {} for restaurant {}", dish, restaurantId);
+        pathVariableValidator.validatePathVariable(restaurantId);
         checkNew(dish);
         Dish created = dishService.create(restaurantId, dish);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -46,6 +51,7 @@ public class AdminDishController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable long restaurantId, @PathVariable long id, @Valid @RequestBody Dish dish) {
         log.info("Update dish {} with id {}", dish, id);
+        pathVariableValidator.validatePathVariable(restaurantId);
         assureIdConsistent(dish, id);
         dishService.update(restaurantId, dish);
     }
@@ -54,6 +60,7 @@ public class AdminDishController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long restaurantId, @PathVariable long id) {
         log.info("Delete dish with id {}", id);
+        pathVariableValidator.validatePathVariable(restaurantId);
         dishService.delete(restaurantId, id);
     }
 }

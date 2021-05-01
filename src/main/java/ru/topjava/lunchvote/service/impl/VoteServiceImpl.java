@@ -77,7 +77,7 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = new Vote();
         vote.setDate(voteTo.getDateTime().toLocalDate());
         vote.setTime(voteTo.getDateTime().toLocalTime());
-        vote.setRestaurant(handleNotFound(voteTo.id()));
+        vote.setRestaurant(restaurantRepository.getOne(voteTo.getRestaurantId()));
         vote.setUser(userRepository.getOne(voteTo.getUserId()));
         return vote;
     }
@@ -93,12 +93,5 @@ public class VoteServiceImpl implements VoteService {
 
     private List<VoteTo> getTosFromVotes(List<Vote> votes) {
         return votes.stream().map(this::getToFromVote).collect(Collectors.toList());
-    }
-
-    private Restaurant handleNotFound(long restaurantId) {
-        if (restaurantRepository.existsById(restaurantId))
-            return restaurantRepository.getOne(restaurantId);
-        else
-            throw new NotFoundException("Not found restaurant with id " + restaurantId);
     }
 }

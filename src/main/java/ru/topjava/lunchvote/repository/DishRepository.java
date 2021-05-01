@@ -15,9 +15,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface DishRepository extends JpaRepository<Dish, Long> {
 
-    List<Dish> findAllByDateAndRestaurant(LocalDate date, Restaurant restaurant);
+    List<Dish> findAllByDateAndRestaurantId(LocalDate date, Long restaurantId);
 
-    Optional<Dish> findByIdAndRestaurant(long id, Restaurant restaurant);
+    Optional<Dish> findByIdAndRestaurantId(long id, Long restaurantId);
 
     @Modifying
     @Query("DELETE FROM Dish d WHERE d.id=:id AND d.restaurant.id=:restaurantId")

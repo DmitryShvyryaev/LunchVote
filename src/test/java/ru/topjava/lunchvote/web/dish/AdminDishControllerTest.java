@@ -15,12 +15,12 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.topjava.lunchvote.exception.ErrorType.*;
 import static ru.topjava.lunchvote.testdata.DishTestData.*;
 import static ru.topjava.lunchvote.testdata.RestaurantTestData.START_SEQ_REST;
 import static ru.topjava.lunchvote.testdata.UserTestData.admin;
 import static ru.topjava.lunchvote.testdata.UserTestData.user1;
 import static ru.topjava.lunchvote.testdata.DateTestData.*;
-import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 
 class AdminDishControllerTest extends AbstractControllerTest {
 
@@ -129,5 +129,40 @@ class AdminDishControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
                 .andExpect(detailMessage("exception.dish.duplicateName"));
+    }
+
+    @Test
+    void createNotExistRestaurant() throws Exception {
+        Dish newDish = getCreated();
+        perform(MockMvcRequestBuilders.post("/rest/admin/restaurants/" + 15L + "/dishes/")
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newDish)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(DATA_NOT_FOUND))
+                .andExpect(detailMessage("exception.restaurant.notFound"));
+    }
+
+    @Test
+    void updateNotExistRestaurant() throws Exception {
+        Dish updated = getUpdated();
+        perform(MockMvcRequestBuilders.put("/rest/admin/restaurants/" + 15L + "/dishes/" + updated.id())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(DATA_NOT_FOUND))
+                .andExpect(detailMessage("exception.restaurant.notFound"));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + 100100)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(DATA_NOT_FOUND));
     }
 }

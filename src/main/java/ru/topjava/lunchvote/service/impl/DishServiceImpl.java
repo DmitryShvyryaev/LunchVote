@@ -29,14 +29,12 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<Dish> getAll(LocalDate date, long restaurantId) {
-        Restaurant owner = handleNotFound(restaurantId);
-        return repository.findAllByDateAndRestaurant(date, owner);
+        return repository.findAllByDateAndRestaurantId(date, restaurantId);
     }
 
     @Override
     public Dish get(long id, long restaurantId) {
-        Restaurant owner = handleNotFound(restaurantId);
-        return checkNotFoundWithId(repository.findByIdAndRestaurant(id, owner).orElse(null), id, Dish.class);
+        return checkNotFoundWithId(repository.findByIdAndRestaurantId(id, restaurantId).orElse(null), id, Dish.class);
     }
 
     @Transactional
@@ -44,7 +42,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public Dish create(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
-        dish.setRestaurant(handleNotFound(restaurantId));
+        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
         return repository.save(dish);
     }
 
@@ -54,8 +52,7 @@ public class DishServiceImpl implements DishService {
     public Dish update(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
         get(dish.id(), restaurantId);
-        dish.setRestaurant(handleNotFound(restaurantId
-        ));
+        dish.setRestaurant(restaurantRepository.getOne(restaurantId));
         return repository.save(dish);
     }
 
@@ -64,12 +61,5 @@ public class DishServiceImpl implements DishService {
     @Override
     public void delete(long restaurantId, long id) {
         checkNotFoundWithId(repository.delete(id, restaurantId) != 0, id, Dish.class);
-    }
-
-    private Restaurant handleNotFound(long restaurantId) {
-        if (restaurantRepository.existsById(restaurantId))
-            return restaurantRepository.getOne(restaurantId);
-        else
-            throw new NotFoundException("Not found restaurant with id " + restaurantId);
     }
 }

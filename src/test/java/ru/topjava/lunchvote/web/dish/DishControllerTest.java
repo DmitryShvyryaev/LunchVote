@@ -3,6 +3,7 @@ package ru.topjava.lunchvote.web.dish;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.topjava.lunchvote.exception.ErrorType;
 import ru.topjava.lunchvote.model.Dish;
 import ru.topjava.lunchvote.web.AbstractControllerTest;
 
@@ -46,5 +47,25 @@ class DishControllerTest extends AbstractControllerTest {
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getAllNotExistRestaurant() throws Exception {
+        perform(MockMvcRequestBuilders.get("/rest/restaurants/" + 15L + "/dishes/")
+                .with(userHttpBasic(user1)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(ErrorType.DATA_NOT_FOUND))
+                .andExpect(detailMessage("exception.restaurant.notFound"));
+    }
+
+    @Test
+    void getNotExistRestaurant() throws Exception {
+        perform(MockMvcRequestBuilders.get("/rest/restaurants/" + 15L + "/dishes/100034")
+                .with(userHttpBasic(user1)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(ErrorType.DATA_NOT_FOUND))
+                .andExpect(detailMessage("exception.restaurant.notFound"));
     }
 }
