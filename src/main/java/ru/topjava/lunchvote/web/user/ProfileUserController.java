@@ -2,18 +2,22 @@ package ru.topjava.lunchvote.web.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.UserService;
 import ru.topjava.lunchvote.to.UserTo;
 import ru.topjava.lunchvote.web.security.AuthorizedUser;
-import ru.topjava.lunchvote.web.security.SecurityUtil;
+import ru.topjava.lunchvote.web.validators.UserValidator;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 import static ru.topjava.lunchvote.util.ValidationUtil.assureIdConsistent;
@@ -28,8 +32,18 @@ public class ProfileUserController {
     private final UserService userService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public ProfileUserController(UserService userService) {
+    private final UserValidator userValidator;
+    private Validator validator;
+
+    public ProfileUserController(UserService userService, UserValidator userValidator, @Qualifier("defaultValidator") Validator validator) {
         this.userService = userService;
+        this.userValidator = userValidator;
+        this.validator = validator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(userValidator);
     }
 
     @GetMapping
@@ -47,7 +61,7 @@ public class ProfileUserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public void update(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         log.info("Update user {} with id {}", userTo, authorizedUser.getId());
         assureIdConsistent(userTo, authorizedUser.getId());
         userService.update(userTo);
@@ -55,7 +69,7 @@ public class ProfileUserController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@RequestBody UserTo userTo) {
+    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         log.info("Create user {}", userTo);
         checkNew(userTo);
         User created = userService.create(userTo);

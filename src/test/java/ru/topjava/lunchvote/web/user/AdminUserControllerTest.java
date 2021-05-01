@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.topjava.lunchvote.exception.NotFoundException;
+import ru.topjava.lunchvote.model.Role;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.UserService;
 import ru.topjava.lunchvote.util.JsonConverter;
@@ -16,10 +17,11 @@ import ru.topjava.lunchvote.web.AbstractControllerTest;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
-import static ru.topjava.lunchvote.web.user.AdminRestController.REST_URL;
+import static ru.topjava.lunchvote.web.user.AdminUserController.REST_URL;
 
-class AdminRestControllerTest extends AbstractControllerTest {
+class AdminUserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
@@ -91,7 +93,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn();
 
-        USER_MATCHER.assertMatch(userService.get(updated.getId()), updated);
+        USER_MATCHER.assertMatch(userService.get(updated.id()), updated);
     }
 
     @Test
@@ -126,5 +128,56 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(user1)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        User newUser = new User(null, " ", "this is not email", " ", Role.USER);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeAdditionProperties(newUser, "password", " ")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void createDuplicateEmail() throws Exception {
+        User newUser = getCreated();
+        newUser.setEmail("user2@email.com");
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeAdditionProperties(newUser, "password", "newPassword")))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.user.duplicateEmail"));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        User updated = new User(user1.id(), " ", " ", " ", Role.ADMIN);
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + updated.id())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeAdditionProperties(updated, "password", updated.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void updateDuplicateEmail() throws Exception {
+        User updated = new User(user1.id(), user1.getName(), "admin@email.com", user1.getPassword(), Role.USER);
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + updated.id())
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeAdditionProperties(updated, "password", updated.getPassword())))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.user.duplicateEmail"));
     }
 }

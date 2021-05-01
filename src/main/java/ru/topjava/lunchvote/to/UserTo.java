@@ -1,10 +1,12 @@
 package ru.topjava.lunchvote.to;
 
+import ru.topjava.lunchvote.HasIdAndEmail;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class UserTo extends BaseTo {
+public class UserTo extends BaseTo implements HasIdAndEmail {
 
     @NotBlank
     @Size(min = 3, max = 100)
@@ -37,6 +39,7 @@ public class UserTo extends BaseTo {
         this.name = name;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }

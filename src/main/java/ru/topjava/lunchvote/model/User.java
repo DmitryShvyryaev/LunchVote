@@ -8,6 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.*;
 import org.springframework.util.CollectionUtils;
+import ru.topjava.lunchvote.HasIdAndEmail;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "user_email_idx")})
-public class User extends AbstractNamedEntity {
+public class User extends AbstractNamedEntity implements HasIdAndEmail {
 
     @Column(name = "email", nullable = false)
     @NotBlank
@@ -71,6 +72,7 @@ public class User extends AbstractNamedEntity {
         this(user.id, user.name, user.email, user.password, user.enabled, user.registered, user.roles);
     }
 
+    @Override
     public String getEmail() {
         return email;
     }

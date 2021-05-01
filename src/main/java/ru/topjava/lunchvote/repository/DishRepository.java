@@ -1,6 +1,5 @@
 package ru.topjava.lunchvote.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,10 +17,7 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 
     List<Dish> findAllByDateAndRestaurant(LocalDate date, Restaurant restaurant);
 
-    @EntityGraph(attributePaths = {"restaurant"})
-    List<Dish> findAllByDate(LocalDate date);
-
-    Optional<Dish> findByIdAndAndRestaurant(long id, Restaurant restaurant);
+    Optional<Dish> findByIdAndRestaurant(long id, Restaurant restaurant);
 
     @Modifying
     @Query("DELETE FROM Dish d WHERE d.id=:id AND d.restaurant.id=:restaurantId")

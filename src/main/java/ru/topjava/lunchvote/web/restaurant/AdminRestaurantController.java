@@ -2,16 +2,11 @@ package ru.topjava.lunchvote.web.restaurant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,7 +14,6 @@ import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.RestaurantService;
 import ru.topjava.lunchvote.web.validators.RestaurantValidator;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -39,15 +33,15 @@ public class AdminRestaurantController {
 
     private Validator validator;
 
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(restaurantValidator);
-    }
-
     public AdminRestaurantController(RestaurantService restaurantService, @Qualifier("defaultValidator") Validator validator, RestaurantValidator restaurantValidator) {
         this.restaurantService = restaurantService;
         this.validator = validator;
         this.restaurantValidator = restaurantValidator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(restaurantValidator);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

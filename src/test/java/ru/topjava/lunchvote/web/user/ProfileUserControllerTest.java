@@ -18,6 +18,7 @@ import ru.topjava.lunchvote.web.AbstractControllerTest;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.topjava.lunchvote.exception.ErrorType.VALIDATION_ERROR;
 import static ru.topjava.lunchvote.testdata.UserTestData.*;
 import static ru.topjava.lunchvote.web.user.ProfileUserController.REST_URL;
 
@@ -95,5 +96,53 @@ class ProfileUserControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL + "/register")
                 .with(userHttpBasic(user1)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void registerInvalid() throws Exception {
+        UserTo newUser = new UserTo(null, " ", "this is not email", "");
+        perform(MockMvcRequestBuilders.post(REST_URL + "/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newUser)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void registerDuplicateEmail() throws Exception {
+        UserTo newUser = new UserTo(null, "User", "user1@email.com", "Password");
+        perform(MockMvcRequestBuilders.post(REST_URL + "/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(newUser)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.user.duplicateEmail"));
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        UserTo updated = new UserTo(user2.id(), " ", " ", " ");
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(user2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR));
+    }
+
+    @Test
+    void updateDuplicateEmail() throws Exception {
+        UserTo updated = new UserTo(user2.id(), user2.getName(), user3.getEmail(), user2.getPassword());
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(user2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(errorType(VALIDATION_ERROR))
+                .andExpect(detailMessage("exception.user.duplicateEmail"));
     }
 }

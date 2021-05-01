@@ -2,14 +2,19 @@ package ru.topjava.lunchvote.web.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.service.UserService;
+import ru.topjava.lunchvote.web.validators.UserValidator;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -17,16 +22,26 @@ import static ru.topjava.lunchvote.util.ValidationUtil.assureIdConsistent;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class AdminRestController {
+@RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+public class AdminUserController {
 
     static final String REST_URL = "/rest/admin/users";
 
     private final UserService userService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public AdminRestController(UserService userService) {
+    private final UserValidator userValidator;
+    private Validator validator;
+
+    public AdminUserController(UserService userService, UserValidator userValidator, @Qualifier("defaultValidator") Validator validator) {
         this.userService = userService;
+        this.userValidator = userValidator;
+        this.validator = validator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(userValidator);
     }
 
     @GetMapping
@@ -48,7 +63,7 @@ public class AdminRestController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         log.info("Create user {}", user);
         checkNew(user);
         User created = userService.create(user);
@@ -61,7 +76,7 @@ public class AdminRestController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable long id) {
+    public void update(@Valid @RequestBody User user, @PathVariable long id) {
         log.info("Update user {} with id {}", user, id);
         assureIdConsistent(user, id);
         userService.update(user);

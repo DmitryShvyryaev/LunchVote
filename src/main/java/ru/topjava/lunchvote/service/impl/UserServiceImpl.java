@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByEmail(String email) {
-        return checkNotFound(repository.findByEmail(email).orElse(null), "email: " + email);
+        return repository.findByEmail(email).orElse(null);
     }
 
     @Transactional

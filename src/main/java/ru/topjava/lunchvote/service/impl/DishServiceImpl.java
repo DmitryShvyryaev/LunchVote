@@ -35,7 +35,7 @@ public class DishServiceImpl implements DishService {
     @Override
     public Dish get(long id, long restaurantId) {
         Restaurant owner = restaurantRepository.getOne(restaurantId);
-        return checkNotFoundWithId(repository.findByIdAndAndRestaurant(id, owner).orElse(null), id);
+        return checkNotFoundWithId(repository.findByIdAndRestaurant(id, owner).orElse(null), id);
     }
 
     @Transactional
