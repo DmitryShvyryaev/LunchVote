@@ -13,7 +13,6 @@ import ru.topjava.lunchvote.web.validators.RestaurantPathVariableValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.time.LocalDate;
 
 import static ru.topjava.lunchvote.util.ValidationUtil.assureIdConsistent;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;
@@ -35,8 +34,7 @@ public class AdminDishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@PathVariable long restaurantId,@Valid @RequestBody Dish dish) {
-        LocalDate today = LocalDate.now();
+    public ResponseEntity<Dish> createWithLocation(@PathVariable long restaurantId, @Valid @RequestBody Dish dish) {
         log.info("Create dish {} for restaurant {}", dish, restaurantId);
         pathVariableValidator.validatePathVariable(restaurantId);
         checkNew(dish);

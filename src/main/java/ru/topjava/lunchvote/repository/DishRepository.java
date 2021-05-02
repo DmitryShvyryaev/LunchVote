@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.topjava.lunchvote.model.Dish;
-import ru.topjava.lunchvote.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.List;

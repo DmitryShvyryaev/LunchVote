@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Restaurant;
-import ru.topjava.lunchvote.model.User;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 import ru.topjava.lunchvote.service.RestaurantService;
 

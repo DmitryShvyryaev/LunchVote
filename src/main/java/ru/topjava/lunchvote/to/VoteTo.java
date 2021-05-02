@@ -1,6 +1,5 @@
 package ru.topjava.lunchvote.to;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class VoteTo extends BaseTo {
@@ -11,7 +10,8 @@ public class VoteTo extends BaseTo {
 
     private Long userId;
 
-    public VoteTo() {}
+    public VoteTo() {
+    }
 
     public VoteTo(Long id, LocalDateTime dateTime, Long restaurantId, Long userId) {
         super(id);

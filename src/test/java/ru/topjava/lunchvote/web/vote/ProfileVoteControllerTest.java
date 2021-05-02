@@ -109,4 +109,18 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
                 .andExpect(errorType(ErrorType.DATA_NOT_FOUND))
                 .andExpect(detailMessage("exception.restaurant.notFound"));
     }
+
+//    Use ONLY after 11:00!
+    @Test
+    void voteRepeatAfterLimit() throws Exception {
+        voteService.create(new VoteTo(null, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), rest1.id(), user1.id()));
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(user1))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonConverter.writeValue(rest2.id())))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(errorType(ErrorType.REPEAT_VOTE_ERROR))
+                .andExpect(detailMessage("error.repeatVote"));
+    }
 }

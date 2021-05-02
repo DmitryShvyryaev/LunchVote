@@ -4,13 +4,12 @@ import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 import ru.topjava.lunchvote.HasId;
 import ru.topjava.lunchvote.exception.NotFoundException;
-import ru.topjava.lunchvote.model.AbstractEntity;
 
 public class ValidationUtil {
     private ValidationUtil() {
     }
 
-    public static <T> T checkNotFoundWithId(T object, long id, Class clazz) {
+    public static <T> T checkNotFoundWithId(T object, long id, Class<T> clazz) {
         checkNotFoundWithId(object != null, id, clazz);
         return object;
     }
@@ -19,7 +18,7 @@ public class ValidationUtil {
         checkNotFound(found, "id=" + id, clazz);
     }
 
-    public static <T> T checkNotFound(T object, String msg, Class clazz) {
+    public static <T> T checkNotFound(T object, String msg, Class<T> clazz) {
         checkNotFound(object != null, msg, clazz);
         return object;
     }

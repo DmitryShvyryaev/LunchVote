@@ -8,7 +8,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,9 +15,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import ru.topjava.lunchvote.exception.ErrorInfo;
 import ru.topjava.lunchvote.exception.ErrorType;
 import ru.topjava.lunchvote.exception.NotFoundException;
+import ru.topjava.lunchvote.exception.RepeatVoteException;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
 
 import static ru.topjava.lunchvote.exception.ErrorType.*;
@@ -38,6 +37,11 @@ public class ExceptionInfoHandler {
 
     public ExceptionInfoHandler(MessageSourceAccessor messageSourceAccessor) {
         this.messageSourceAccessor = messageSourceAccessor;
+    }
+
+    @ExceptionHandler(RepeatVoteException.class)
+    public ResponseEntity<ErrorInfo> handleRepeatVote(HttpServletRequest req, RepeatVoteException e) {
+        return logAndGetErrorInfo(req, e, REPEAT_VOTE_ERROR, messageSourceAccessor.getMessage("error.repeatVote"));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

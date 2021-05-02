@@ -33,7 +33,7 @@ public class ProfileUserController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UserValidator userValidator;
-    private Validator validator;
+    private final Validator validator;
 
     public ProfileUserController(UserService userService, UserValidator userValidator, @Qualifier("defaultValidator") Validator validator) {
         this.userService = userService;

@@ -1,5 +1,6 @@
 package ru.topjava.lunchvote.service.impl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,6 +24,11 @@ public class DishServiceImplTest extends AbstractServiceTest {
 
     @Autowired
     private DishService dishService;
+
+    @BeforeEach
+    public void evictCache() {
+        cacheManager.getCache("menu").clear();
+    }
 
     @Test
     void getAllForRestaurant() {

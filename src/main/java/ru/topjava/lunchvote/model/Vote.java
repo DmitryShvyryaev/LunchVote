@@ -35,21 +35,6 @@ public class Vote extends AbstractEntity {
     public Vote() {
     }
 
-    public Vote(LocalDate date, LocalTime time, Restaurant restaurant, User user) {
-        this.date = date;
-        this.time = time;
-        this.restaurant = restaurant;
-        this.user = user;
-    }
-
-    public Vote(Long id, LocalDate date, LocalTime time, Restaurant restaurant, User user) {
-        super(id);
-        this.date = date;
-        this.time = time;
-        this.restaurant = restaurant;
-        this.user = user;
-    }
-
     public LocalDate getDate() {
         return date;
     }

@@ -10,7 +10,6 @@ import ru.topjava.lunchvote.to.VoteTo;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

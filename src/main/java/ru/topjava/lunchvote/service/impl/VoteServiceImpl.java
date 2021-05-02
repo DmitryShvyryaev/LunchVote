@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.exception.RepeatVoteException;
-import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.model.Vote;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 import ru.topjava.lunchvote.repository.UserRepository;
@@ -16,8 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.topjava.lunchvote.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class VoteServiceImpl implements VoteService {

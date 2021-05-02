@@ -31,7 +31,7 @@ public class AdminUserController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UserValidator userValidator;
-    private Validator validator;
+    private final Validator validator;
 
     public AdminUserController(UserService userService, UserValidator userValidator, @Qualifier("defaultValidator") Validator validator) {
         this.userService = userService;
@@ -91,7 +91,7 @@ public class AdminUserController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable long id,@RequestParam boolean enabled) {
+    public void enable(@PathVariable long id, @RequestParam boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
         userService.enable(id, enabled);
     }

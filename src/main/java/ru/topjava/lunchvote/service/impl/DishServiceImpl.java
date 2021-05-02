@@ -1,12 +1,11 @@
 package ru.topjava.lunchvote.service.impl;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import ru.topjava.lunchvote.exception.NotFoundException;
 import ru.topjava.lunchvote.model.Dish;
-import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.repository.DishRepository;
 import ru.topjava.lunchvote.repository.RestaurantRepository;
 import ru.topjava.lunchvote.service.DishService;
@@ -28,6 +27,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
+    @Cacheable(value = "menu")
     public List<Dish> getAll(LocalDate date, long restaurantId) {
         return repository.findAllByDateAndRestaurantId(date, restaurantId);
     }
@@ -38,7 +38,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = {"restaurants", "menu"}, allEntries = true)
     @Override
     public Dish create(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
@@ -47,7 +47,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = {"restaurants", "menu"}, allEntries = true)
     @Override
     public Dish update(long restaurantId, Dish dish) {
         Assert.notNull(dish, "Dish must not be null.");
@@ -57,7 +57,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Transactional
-    @CacheEvict(value = "restaurants", allEntries = true)
+    @CacheEvict(value = {"restaurants", "menu"}, allEntries = true)
     @Override
     public void delete(long restaurantId, long id) {
         checkNotFoundWithId(repository.delete(id, restaurantId) != 0, id, Dish.class);

@@ -1,6 +1,7 @@
 package ru.topjava.lunchvote.web.dish;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,6 +28,11 @@ class AdminDishControllerTest extends AbstractControllerTest {
     private final static String REST_URL = "/rest/admin/restaurants/" + START_SEQ_REST + "/dishes/";
     @Autowired
     private JsonConverter jsonConverter;
+
+    @BeforeEach
+    public void evictCache() {
+        cacheManager.getCache("restaurants").clear();
+    }
 
     @Test
     void createWithLocation() throws Exception {

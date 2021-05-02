@@ -6,7 +6,8 @@ public enum ErrorType {
     VALIDATION_ERROR("error.validationError", HttpStatus.UNPROCESSABLE_ENTITY),
     DATA_NOT_FOUND("error.dataNotFound", HttpStatus.UNPROCESSABLE_ENTITY),
     DATA_ERROR("error.dataError", HttpStatus.CONFLICT),
-    APP_ERROR("error.appError", HttpStatus.INTERNAL_SERVER_ERROR);
+    APP_ERROR("error.appError", HttpStatus.INTERNAL_SERVER_ERROR),
+    REPEAT_VOTE_ERROR("error.repeatVote", HttpStatus.CONFLICT);
 
     private final String errorCode;
     private final HttpStatus status;

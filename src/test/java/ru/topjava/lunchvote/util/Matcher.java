@@ -10,12 +10,12 @@ public class Matcher<T> {
     private final JsonConverter converter = JsonConverter.getConverter();
     private final Class<T> clazz;
 
-    private Matcher(String[] ignoredFields, Class clazz) {
+    private Matcher(String[] ignoredFields, Class<T> clazz) {
         this.ignoredFields = ignoredFields;
         this.clazz = clazz;
     }
 
-    public static <T> Matcher<T> getComparator(Class clazz, String... fieldsToIgnore) {
+    public static <T> Matcher<T> getComparator(Class<T> clazz, String... fieldsToIgnore) {
         return new Matcher<>(fieldsToIgnore, clazz);
     }
 

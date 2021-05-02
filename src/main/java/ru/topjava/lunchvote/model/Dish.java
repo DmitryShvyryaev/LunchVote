@@ -52,7 +52,7 @@ public class Dish extends AbstractNamedEntity {
     }
 
     public Dish(Dish dish) {
-        this(dish.id, dish.name, dish.getPrice(), dish.date);
+        this(dish.id, dish.name, dish.getPrice(), dish.date, dish.restaurant);
     }
 
     public Long getPrice() {

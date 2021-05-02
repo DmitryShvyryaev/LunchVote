@@ -1,22 +1,21 @@
 package ru.topjava.lunchvote.model;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 import ru.topjava.lunchvote.HasIdAndEmail;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "user_email_idx")})
@@ -49,7 +48,7 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
     @ElementCollection(fetch = FetchType.EAGER)
     @BatchSize(size = 200)
     @JoinColumn(name = "user_id")
-    @OnDelete(action= OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
     public User() {
@@ -95,14 +94,6 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Date getRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(Date registered) {
-        this.registered = registered;
     }
 
     public Set<Role> getRoles() {

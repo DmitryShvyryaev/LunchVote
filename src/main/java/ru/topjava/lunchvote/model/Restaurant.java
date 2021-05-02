@@ -1,7 +1,6 @@
 package ru.topjava.lunchvote.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.mapping.Collection;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

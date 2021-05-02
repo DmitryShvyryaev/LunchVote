@@ -31,7 +31,7 @@ public class AdminRestaurantController {
 
     private final RestaurantValidator restaurantValidator;
 
-    private Validator validator;
+    private final Validator validator;
 
     public AdminRestaurantController(RestaurantService restaurantService, @Qualifier("defaultValidator") Validator validator, RestaurantValidator restaurantValidator) {
         this.restaurantService = restaurantService;

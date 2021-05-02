@@ -9,7 +9,6 @@ import ru.topjava.lunchvote.model.Restaurant;
 import ru.topjava.lunchvote.service.AbstractServiceTest;
 import ru.topjava.lunchvote.service.RestaurantService;
 import ru.topjava.lunchvote.testdata.DishTestData;
-import ru.topjava.lunchvote.util.Matcher;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
