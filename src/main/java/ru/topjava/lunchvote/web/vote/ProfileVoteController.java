@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping(value = ProfileVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileVoteController {
 
-    static final String REST_URL = "/rest/profile/vote";
+    static final String REST_URL = "/rest/profile/votes";
 
     private final VoteService voteService;
     private final Logger log = LoggerFactory.getLogger(getClass());

@@ -13,6 +13,7 @@ import ru.topjava.lunchvote.web.validators.RestaurantPathVariableValidator;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 
 import static ru.topjava.lunchvote.util.ValidationUtil.assureIdConsistent;
 import static ru.topjava.lunchvote.util.ValidationUtil.checkNew;

@@ -41,6 +41,7 @@ class AdminDishControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonConverter.writeValue(newDish)))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn();
 
