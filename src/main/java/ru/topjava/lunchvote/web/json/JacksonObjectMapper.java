@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class JacksonObjectMapper extends ObjectMapper {
 
-    private JacksonObjectMapper() {
+    public JacksonObjectMapper() {
         registerModule(new Hibernate5Module());
 
         registerModule(new JavaTimeModule());

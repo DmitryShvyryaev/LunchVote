@@ -20,10 +20,6 @@ public class AbstractEntity implements Persistable<Long>, HasId {
     public AbstractEntity() {
     }
 
-    public AbstractEntity(Long id) {
-        this.id = id;
-    }
-
     @Override
     public Long getId() {
         return id;
