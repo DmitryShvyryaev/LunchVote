@@ -24,11 +24,6 @@ public class UserServiceImplTest extends AbstractServiceTest {
     @Autowired
     private UserService userService;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("users").clear();
-    }
-
     @Test
     void getAll() {
         USER_MATCHER.assertMatch(userService.getAll(), users);

@@ -21,11 +21,6 @@ import static ru.topjava.lunchvote.web.restaurant.RestaurantController.REST_URL;
 
 class RestaurantControllerTest extends AbstractControllerTest {
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("restaurants").clear();
-    }
-
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)

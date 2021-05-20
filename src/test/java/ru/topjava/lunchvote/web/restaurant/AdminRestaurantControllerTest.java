@@ -30,11 +30,6 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Autowired
     private RestaurantService restaurantService;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("restaurants").clear();
-    }
-
     @Test
     void create() throws Exception {
         Restaurant newRestaurant = getCreated();

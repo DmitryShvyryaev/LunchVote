@@ -23,11 +23,6 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
     @Autowired
     private RestaurantService restaurantService;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("restaurants").clear();
-    }
-
     @Test
     void getAll() {
         RESTAURANT_MATCHER.assertMatch(restaurantService.getAll(), restaurants);
@@ -107,5 +102,11 @@ public class RestaurantServiceImplTest extends AbstractServiceTest {
     void createInvalid() {
         validateRootCause(ConstraintViolationException.class, () -> restaurantService.create(new Restaurant("22", "description123")));
         validateRootCause(ConstraintViolationException.class, () -> restaurantService.create(new Restaurant("name", "descr")));
+    }
+
+    @Test
+    void testCache() {
+        restaurantService.getAllWithMenu(FIRST_DAY);
+        restaurantService.getAllWithMenu(FIRST_DAY);
     }
 }

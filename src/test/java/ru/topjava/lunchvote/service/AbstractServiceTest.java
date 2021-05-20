@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(TimingExtension.class)
 public abstract class AbstractServiceTest {
 
-    @Autowired
-    protected CacheManager cacheManager;
-
     protected <T extends Throwable> void validateRootCause(Class<T> rootExceptionClass, Runnable runnable) {
         assertThrows(rootExceptionClass, () -> {
             try {

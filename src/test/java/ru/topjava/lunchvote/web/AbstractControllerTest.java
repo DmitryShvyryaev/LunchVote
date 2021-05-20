@@ -46,8 +46,6 @@ public abstract class AbstractControllerTest {
     @Autowired
     protected DishService dishService;
 
-    @Autowired
-    protected CacheManager cacheManager;
     protected MockMvc mockMvc;
     @Autowired
     protected MessageSourceAccessor messageSourceAccessor;

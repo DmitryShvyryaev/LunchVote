@@ -25,11 +25,6 @@ public class DishServiceImplTest extends AbstractServiceTest {
     @Autowired
     private DishService dishService;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("menu").clear();
-    }
-
     @Test
     void getAllForRestaurant() {
         DISH_MATCHER.assertMatch(dishService.getAll(FIRST_DAY, START_SEQ_REST), tanukiFirstDay);

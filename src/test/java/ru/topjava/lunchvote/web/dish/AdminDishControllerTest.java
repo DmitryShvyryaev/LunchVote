@@ -29,11 +29,6 @@ class AdminDishControllerTest extends AbstractControllerTest {
     @Autowired
     private JsonConverter jsonConverter;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("restaurants").clear();
-    }
-
     @Test
     void createWithLocation() throws Exception {
         Dish newDish = getCreated();

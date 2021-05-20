@@ -30,11 +30,6 @@ class AdminUserControllerTest extends AbstractControllerTest {
     @Autowired
     private JsonConverter jsonConverter;
 
-    @BeforeEach
-    public void evictCache() {
-        cacheManager.getCache("users").clear();
-    }
-
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
