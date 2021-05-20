@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
         this.encoder = encoder;
     }
 
-    @Cacheable(value = "users")
     @Override
     public List<User> getAll() {
         return repository.findAll();
@@ -50,7 +49,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User create(User user) {
         Assert.notNull(user, "User must not bu null.");
@@ -58,7 +56,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User create(UserTo userTo) {
         Assert.notNull(userTo, "User must not bu null.");
@@ -67,7 +64,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User update(User user) {
         Assert.notNull(user, "User must not bu null.");
@@ -75,7 +71,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public User update(UserTo userTo) {
         User user = get(userTo.getId());
@@ -83,14 +78,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public void delete(long id) {
         checkNotFound(repository.delete(id) != 0, "id = " + id, User.class);
     }
 
     @Transactional
-    @CacheEvict(value = "users", allEntries = true)
     @Override
     public void enable(long id, boolean enable) {
         User user = get(id);

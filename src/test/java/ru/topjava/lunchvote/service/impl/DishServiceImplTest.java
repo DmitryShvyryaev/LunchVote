@@ -93,4 +93,5 @@ public class DishServiceImplTest extends AbstractServiceTest {
         validateRootCause(ConstraintViolationException.class, () -> dishService.create(START_SEQ_REST, new Dish("name", null, LocalDate.now())));
         validateRootCause(ConstraintViolationException.class, () -> dishService.create(START_SEQ_REST, new Dish("name", 9999L, null)));
     }
+
 }
