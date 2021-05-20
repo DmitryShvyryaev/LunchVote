@@ -60,12 +60,4 @@ public class ProfileVoteController {
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
-
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthorizedUser authorizedUser) {
-        LocalDate today = LocalDate.now();
-        log.info("Delete vote for a day {} by user {}", today, authorizedUser.getUsername());
-        voteService.delete(today, authorizedUser.getId());
-    }
 }

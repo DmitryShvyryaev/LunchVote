@@ -79,20 +79,6 @@ class ProfileVoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        LocalDate today = LocalDate.now();
-        VoteTo newVote = new VoteTo(today.atTime(10, 0), rest1.id(), user3.id());
-        VoteTo created = voteService.create(newVote);
-        newVote.setId(created.id());
-        VOTE_TO_MATCHER.assertMatch(voteService.get(today, user3.id()), newVote);
-        perform(MockMvcRequestBuilders.delete(REST_URL)
-                .with(userHttpBasic(user3)))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> voteService.get(today, user3.id()));
-    }
-
-    @Test
     void voteUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.post(REST_URL))
                 .andExpect(status().isUnauthorized());
