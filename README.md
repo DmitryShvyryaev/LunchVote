@@ -3,6 +3,10 @@
 Voting system for deciding where to have lunch.
 <br><br>
 A full-featured Spring / JPA Enterprise application (without a front-end) for deciding where to work with role-based authorization and access rights using the most popular Java tools and technologies: Maven, Spring MVC, Security, JPA(Hibernate), REST(Jackson), Java 8 Stream and Time API, and storage in HSQLDB databases.
+
+Ссылка на документацию 
+
+http://localhost:8080/surveys/swagger-ui.html
 <br><br>
 ## Test Curl
 
