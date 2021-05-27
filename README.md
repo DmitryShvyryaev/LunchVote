@@ -1,4 +1,4 @@
-# Lunch Voting
+# Restaurant voting
 
 Voting system for deciding where to have lunch.
 <br><br>
