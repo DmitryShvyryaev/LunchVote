@@ -44,7 +44,7 @@
     </properties>
 
     <build>
-        <finalName>lunchvote</finalName>
+        <finalName>restaurant-voting</finalName>
         <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
